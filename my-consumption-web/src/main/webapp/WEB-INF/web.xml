@@ -9,8 +9,8 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:biz/manex/sr/myconsumption/business/myconsumption-business.xml
-            classpath:biz/manex/sr/myconsumption/web/service/myconsumption-web.xml
+            classpath:org/starfishrespect/myconsumption/server/business/myconsumption-business.xml
+            classpath:org/starfishrespect/myconsumption/server/web/service/myconsumption-web.xml
         </param-value>
     </context-param>
 

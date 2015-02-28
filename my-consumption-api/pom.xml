@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>biz.manex.sr.myconsumption</groupId>
+        <groupId>org.starfishrespect.myconsumption.server</groupId>
         <artifactId>my-consumption</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>biz.manex.sr.myconsumption</groupId>
+    <groupId>org.starfishrespect.myconsumption.server</groupId>
     <artifactId>my-consumption-api</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
