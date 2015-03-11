@@ -1,15 +1,13 @@
 package org.starfishrespect.myconsumption.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.SimpleResponse;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -21,19 +19,19 @@ public class UserController {
     @Autowired
     private UserRepository repository;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public User get(@RequestParam(value = "name") String name) {
+    @RequestMapping(value = "/{name}", method = RequestMethod.GET)
+    public User get(@PathVariable String name) {
         User user = repository.findByName(name);
 
         if (user == null)
-            throw new IllegalArgumentException("Cannot find user with name: " + name);
+            throw new NotFoundException();
         else
             return user;
 
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public SimpleResponse put(@RequestParam(value = "name") String name, String password) {
+    @RequestMapping(value = "/{name}", method = RequestMethod.POST)
+    public SimpleResponse put(@PathVariable String name, String password) {
         if (repository.findByName(name) != null) {
             return new SimpleResponse(SimpleResponse.STATUS_ALREADY_EXISTS, "User already exists");
         }
@@ -45,6 +43,24 @@ public class UserController {
         } else {
             return new SimpleResponse(false, "Error while creating user");
         }
+    }
+
+    @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.POST)
+    public SimpleResponse addSensor(@PathVariable String name, @PathVariable String sensorId) {
+        User user = repository.findByName(name);
+
+        if (user == null)
+            throw new NotFoundException();
+
+        // todo: check if sensor with this ID exists
+        // NotFoundException() if it does not or:
+        //  return new SimpleResponse(false, "you already have this sensor");
+
+        user.addSensor(sensorId);
+        repository.save(user);
+        // todo: sensorDao.incrementUsageCount(sensorId);
+
+        return new SimpleResponse(true, "sensor associated to the user");
     }
 
 }

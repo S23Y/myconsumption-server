@@ -1,6 +1,8 @@
 package org.starfishrespect.myconsumption.server.entities;
 
 import org.springframework.data.annotation.Id;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -17,6 +19,7 @@ public class User {
     public User(String name, String password) {
         this.name = name;
         this.password = password;
+        sensors = new ArrayList<String>();
     }
 
 
@@ -45,5 +48,9 @@ public class User {
 
     public void setSensors(List<String> sensors) {
         this.sensors = sensors;
+    }
+
+    public void addSensor(String sensorID) {
+        sensors.add(sensorID);
     }
 }
