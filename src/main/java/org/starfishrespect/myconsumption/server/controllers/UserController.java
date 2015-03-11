@@ -20,13 +20,19 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.GET)
     public User get(@RequestParam(value = "name") String name) {
-        return repository.findByName(name);
+        User user = repository.findByName(name);
+
+        if (user == null)
+            throw new IllegalArgumentException("Cannot find user with name: " + name);
+        else
+            return user;
+
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public User put(@RequestParam(value = "name") String name) {
         if (repository.findByName(name) != null)
-            return null; // user already exists
+            throw new IllegalArgumentException("User already exists: " + name);
 
         return repository.save(new User(name));
     }

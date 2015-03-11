@@ -8,7 +8,8 @@ import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+//public class Application implements CommandLineRunner {
+public class Application {
 
     @Autowired
     private UserRepository repository;
@@ -17,7 +18,7 @@ public class Application implements CommandLineRunner {
         SpringApplication.run(Application.class, args);
     }
 
-    @Override
+/*    @Override
     public void run(String... args) throws Exception {
 
         repository.deleteAll();
@@ -39,5 +40,5 @@ public class Application implements CommandLineRunner {
         System.out.println("--------------------------------");
         System.out.println(repository.findByName("Alice"));
 
-    }
+    }*/
 }
