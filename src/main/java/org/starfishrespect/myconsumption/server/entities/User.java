@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.api.dto;
+package org.starfishrespect.myconsumption.server.entities;
 
 import org.springframework.data.annotation.Id;
 import java.util.List;
