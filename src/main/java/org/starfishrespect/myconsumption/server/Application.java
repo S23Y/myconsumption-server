@@ -23,7 +23,7 @@ public class Application {
 
         repository.deleteAll();
 
-        // save a couple of customers
+*//*        // save a couple of customers
         repository.save(new User("Alice"));
         repository.save(new User("Bob"));
 
@@ -38,7 +38,7 @@ public class Application {
         // fetch an individual user
         System.out.println("User found with findByName('Alice'):");
         System.out.println("--------------------------------");
-        System.out.println(repository.findByName("Alice"));
+        System.out.println(repository.findByName("Alice"));*//*
 
     }*/
 }
