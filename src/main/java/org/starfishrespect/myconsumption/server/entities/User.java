@@ -53,4 +53,13 @@ public class User {
     public void addSensor(String sensorID) {
         sensors.add(sensorID);
     }
+
+    public void removeSensor(String sensorId) {
+        for (int i = 0; i < sensors.size(); i ++) {
+            if (sensors.get(i).equals(sensorId)) {
+                sensors.remove(i);
+                return;
+            }
+        }
+    }
 }
