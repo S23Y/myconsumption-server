@@ -5,8 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.starfishrespect.myconsumption.server.SimpleResponse;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
+
+import javax.ws.rs.BadRequestException;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -30,11 +33,18 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public User put(@RequestParam(value = "name") String name) {
-        if (repository.findByName(name) != null)
-            throw new IllegalArgumentException("User already exists: " + name);
-
-        return repository.save(new User(name));
+    public SimpleResponse put(@RequestParam(value = "name") String name, String password) {
+        if (repository.findByName(name) != null) {
+            return new SimpleResponse(SimpleResponse.STATUS_ALREADY_EXISTS, "User already exists");
+        }
+        if (password.equals("")) {
+            throw new BadRequestException(new Throwable("Password is empty"));
+        }
+        if (repository.save(new User(name, password)) != null) {
+            return new SimpleResponse(true, "user created");
+        } else {
+            return new SimpleResponse(false, "Error while creating user");
+        }
     }
 
 }

@@ -9,12 +9,14 @@ public class User {
     private String id;
 
     private String name;
+    private String password;
     private List<String> sensors;
 
     public User() {}
 
-    public User(String name) {
+    public User(String name, String password) {
         this.name = name;
+        this.password = password;
     }
 
 
