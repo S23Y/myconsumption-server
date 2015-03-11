@@ -22,7 +22,11 @@ public class User {
     public String toString() {
         return String.format(
                 "Customer[id=%s, name='%s', sensors='%s']",
-                id, name, sensors.toString());
+                id, name, this.printSensors());
+    }
+
+    private String printSensors() {
+        return sensors == null ? "" : sensors.toString();
     }
 
     public String getName() {
