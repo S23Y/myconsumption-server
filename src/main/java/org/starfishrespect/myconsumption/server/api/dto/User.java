@@ -1,16 +1,28 @@
 package org.starfishrespect.myconsumption.server.api.dto;
 
+import org.springframework.data.annotation.Id;
 import java.util.List;
 
-public class UserDTO {
+public class User {
+
+    @Id
+    private String id;
+
     private String name;
     private List<String> sensors;
 
-    public UserDTO() {
+    public User() {}
+
+    public User(String name) {
+        this.name = name;
     }
 
-    public UserDTO(String name) {
-        this.name = name;
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Customer[id=%s, name='%s', sensors='%s']",
+                id, name, sensors.toString());
     }
 
     public String getName() {
