@@ -1,11 +1,14 @@
 package org.starfishrespect.myconsumption.server.entities;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Date;
 
 /**
  * Created by thibaud on 11.03.15.
  */
 public class Sensor {
+    @Id
     private String id;
     private String name;
     private String type;

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 
+import javax.ws.rs.NotFoundException;
 import java.util.List;
 
 /**
@@ -25,12 +26,17 @@ public class SensorController {
         return repository.findAll();
     }
 
-/*    @GET
-    @Path("{sensor}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Sensor get(@PathParam("sensor") String sensorId);
+    @RequestMapping(value = "/{sensor}", method = RequestMethod.GET)
+    public Sensor get(@PathVariable String sensorId) {
+        Sensor sensor = repository.findOne(sensorId);
 
-    *//**
+        if (sensor == null)
+            throw new NotFoundException();
+
+        return sensor;
+    }
+    
+ /*   *//**
      * Returns the values from a given sensor
      *
      * @param sensor
@@ -76,22 +82,9 @@ public class SensorController {
 
 
 
- /*    @Override
-    public Sensor get(String sensorId) {
-        try {
-            return dozerBeanMapper.map(sensorController.get(sensorId), Sensor.class);
-        } catch (DaoException e) {
-            // only SENSOR_NOT_FOUND is possible for the moment
-            switch (e.getExceptionType()) {
-                case SENSOR_NOT_FOUND:
-                    throw new NotFoundException();
-                default:
-                    throw new BadRequestException();
-            }
-        }
-    }
 
-    @Override
+
+ /*   @Override
     public List<List<Integer>> valuesForSensor(String sensor, int startTime, int endTime) {
         if (endTime == 0)
             endTime = Integer.MAX_VALUE;
