@@ -1,15 +1,18 @@
 package org.starfishrespect.myconsumption.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -19,37 +22,78 @@ import java.util.List;
 public class SensorController {
 
     @Autowired
-    private SensorRepository repository;
+    private SensorRepository mSensorRepository;
+
+    @Autowired
+    private ValuesRepository mValuesRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Sensor> getAllSensors() {
-        return repository.findAll();
+        return mSensorRepository.findAll();
     }
 
-    @RequestMapping(value = "/{sensor}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{sensorId}", method = RequestMethod.GET)
     public Sensor get(@PathVariable String sensorId) {
-        Sensor sensor = repository.findOne(sensorId);
+        Sensor sensor = mSensorRepository.findOne(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
 
         return sensor;
     }
-    
- /*   *//**
+
+    /**
      * Returns the values from a given sensor
-     *
-     * @param sensor
-     * @param startTime
-     * @param endTime
-     * @return
-     *//*
-    @GET
-    @Path("{sensor}/data")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<List<Integer>> valuesForSensor(@PathParam("sensor") String sensor,
-                                               @QueryParam("start") @DefaultValue("0") int startTime,
-                                               @QueryParam("end") @DefaultValue("0") int endTime);
+     */
+    @RequestMapping(value = "/{sensorId}/data", method = RequestMethod.GET)
+    public List<List<Integer>> valuesForSensor(@PathVariable String sensorId,
+                                               @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
+                                               @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) {
+        if (endTime == 0)
+            endTime = Integer.MAX_VALUE;
+        if (startTime < 0 || endTime < 0 || startTime > endTime) {
+            throw new BadRequestException();
+        }
+
+        Sensor sensor = mSensorRepository.findOne(sensorId);
+
+        if (sensor == null)
+            throw new NotFoundException();
+
+        List<List<Integer>> values = mSensorRepository.getValues(sensor);
+
+        valuesDao.setSensor(sensor);
+
+
+        int effectiveStart = startTime - startTime % 3600;
+        List<SensorDataset> daoValues = valuesDao.getSensor(new Date(((long) effectiveStart) * 1000L),
+                new Date(((long) endTime) * 1000L));
+        List<List<Integer>> values = new ArrayList<List<Integer>>();
+        for (SensorDataset value : daoValues) {
+            int start = (int) (value.getTimestamp().getTime() / 1000);
+            TreeMap<Integer, MinuteValues> v = value.getValues();
+            if (v == null) {
+                continue;
+            }
+            for (int key : v.keySet()) {
+                for (int second : v.get(key).containedSeconds()) {
+                    int time = start + key * 60 + second;
+                    if (time < startTime || time > endTime) {
+                        continue;
+                    }
+                    List<Integer> item = new ArrayList<Integer>();
+                    item.add(time);
+                    item.add(value.getValues().get(key).getValue(second));
+                    values.add(item);
+                }
+            }
+        }
+        return values;
+
+
+    }
+
+ /*
 
 
     @POST
@@ -84,26 +128,7 @@ public class SensorController {
 
 
 
- /*   @Override
-    public List<List<Integer>> valuesForSensor(String sensor, int startTime, int endTime) {
-        if (endTime == 0)
-            endTime = Integer.MAX_VALUE;
-        if (startTime < 0 || endTime < 0 || startTime > endTime) {
-            throw new BadRequestException();
-        }
-
-        try {
-            return sensorController.getValues(sensor, startTime, endTime);
-        } catch (DaoException e) {
-            // only SENSOR_NOT_FOUND is possible for the moment
-            switch (e.getExceptionType()) {
-                case SENSOR_NOT_FOUND:
-                    throw new NotFoundException();
-                default:
-                    throw new BadRequestException();
-            }
-        }
-    }
+ /*
 
     @Override
     public SimpleResponse editSensor(String sensorId, String name, String settings) {
