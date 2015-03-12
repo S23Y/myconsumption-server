@@ -60,9 +60,13 @@ public class SensorController {
         if (sensor == null)
             throw new NotFoundException();
 
-        List<List<Integer>> values = mSensorRepository.getValues(sensor);
+        int effectiveStart = startTime - startTime % 3600;
+        List<SensorDataset> values = mValuesRepository.getValuesForSensor(sensorId,
+                new Date(((long) effectiveStart) * 1000L), new Date(((long) endTime) * 1000L));
 
-        valuesDao.setSensor(sensor);
+        return null;
+
+/*        valuesDao.setSensor(sensor);
 
 
         int effectiveStart = startTime - startTime % 3600;
@@ -88,7 +92,7 @@ public class SensorController {
                 }
             }
         }
-        return values;
+        return values;*/
 
 
     }
