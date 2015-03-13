@@ -1,55 +1,36 @@
 package org.starfishrespect.myconsumption.server.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Tool used to schedule data retrievement operations
+ * Entry point for the data retriever service
  */
-public class RetrieveScheduler {
+@SpringBootApplication
+public class RetrieveScheduler implements CommandLineRunner {
 
-    // @TODO: put these parameters in a XML file
-    private long maxRetrieveInterval = 600000L; // 10 minutes
-    private long minPauseInterval = 1000L; // 1 second pause
-    private DataRetriever retriever;
-
+    private final long maxRetrieveInterval = 600000L; // 10 minutes
+    private final long minPauseInterval = 1000L; // 1 second pause
     private long nextRetrieve = 0;
 
-    public RetrieveScheduler(DataRetriever retriever) {
-        this.retriever = retriever;
-    }
+    @Autowired
+    private DataRetriever retriever;
 
-    /**
-     * Gets the max retrieve interval
-     *
-     * @return the interval (in ms)
-     */
-    public long getMaxRetrieveInterval() {
-        return maxRetrieveInterval;
-    }
-
-    /**
-     * Sets the max retrieve interval.
-     *
-     * @param maxRetrieveInterval the interval
-     */
-    public void setMaxRetrieveInterval(long maxRetrieveInterval) {
-        this.maxRetrieveInterval = maxRetrieveInterval;
-    }
-
-    public long getMinPauseInterval() {
-        return minPauseInterval;
-    }
-
-    public void setMinPauseInterval(long minPauseInterval) {
-        this.minPauseInterval = minPauseInterval;
+    public static void main(String args[]) {
+        SpringApplication.run(RetrieveScheduler.class, args);
     }
 
     /**
      * Starts scheduling data retrieving
      */
-    public void schedule() {
+    @Override
+    public void run(String... args) throws Exception {
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
         Timer retrieveTimer = new Timer();
         retrieveTimer.schedule(new RetrieveTask(), 0);
