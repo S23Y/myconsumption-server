@@ -1,9 +1,11 @@
 package org.starfishrespect.myconsumption.server.repositoriesimpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.Assert;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepositoryCustom;
 
@@ -15,7 +17,9 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
     private MongoOperations mongoOperation;
     private String COLLECTION_NAME = "sensors";
 
+    @Autowired
     public SensorRepositoryImpl(MongoOperations mongoOperation) {
+        Assert.notNull(mongoOperation, "MongoOperations must not be null!");
         this.mongoOperation = mongoOperation;
         this.init();
     }
