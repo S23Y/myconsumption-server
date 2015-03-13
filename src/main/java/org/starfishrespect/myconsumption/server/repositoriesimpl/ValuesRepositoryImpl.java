@@ -6,7 +6,9 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.Assert;
+import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.exception.ExceptionType;
@@ -14,6 +16,7 @@ import org.starfishrespect.myconsumption.server.repositories.ValuesRepositoryCus
 
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by thibaud on 12.03.15.
@@ -53,6 +56,50 @@ public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
         }
     }
 
+    @Override
+    public void reset() throws DaoException {
+        if (collectionName != null) {
+            mongoOperation.dropCollection(collectionName);
+            init();
+        }
+    }
+
+    @Override
+    public void insertOrUpdate(SensorDataset value) throws DaoException {
+        Update update = new Update();
+        Query existingQuery = new Query(new Criteria("timestamp").is(value.getTimestamp()));
+
+        if (mongoOperation.exists(existingQuery, SensorDataset.class, collectionName)) {
+            TreeMap<Integer, MinuteValues> minuteValues = value.getValues();
+            for (Integer minuteTs : minuteValues.keySet()) {
+                Query existingMinute = new Query(new Criteria().andOperator(
+                        Criteria.where("timestamp").is(value.getTimestamp()),
+                        Criteria.where("values." + minuteTs)
+                ));
+                MinuteValues minute;
+                if (mongoOperation.exists(existingMinute, MinuteValues.class, collectionName)) {
+                    minute = mongoOperation.findOne(existingMinute, MinuteValues.class, collectionName);
+                    minute.merge(minuteValues.get(minuteTs));
+                } else {
+                    minute = minuteValues.get(minuteTs);
+                }
+                update.set("values." + minuteTs, minute);
+            }
+            mongoOperation.updateFirst(existingQuery, update, collectionName);
+        } else {
+            mongoOperation.save(value, collectionName);
+        }
+    }
+
+    @Override
+    public void insertOrUpdate(List<SensorDataset> values) throws DaoException {
+        if (collectionName == null) {
+            throw makeNoSensorException();
+        }
+        for (SensorDataset value : values) {
+            insertOrUpdate(value);
+        }
+    }
 
     @Override
     public List<SensorDataset> getSensor(Date startTime, Date endTime) throws DaoException {
@@ -62,6 +109,21 @@ public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
         ));
         timeQuery.with(new Sort(Sort.Direction.ASC, "timestamp"));
         return mongoOperation.find(timeQuery, SensorDataset.class, collectionName);
+    }
+
+    @Override
+    public SensorDataset getOne(Date timestamp) throws DaoException {
+        Query timeQuery = new Query(Criteria.where("timestamp").is(timestamp));
+        return mongoOperation.findOne(timeQuery, SensorDataset.class, collectionName);
+    }
+
+    @Override
+    public boolean removeSensor(String sensor) throws DaoException {
+        if (collectionName != null) {
+            mongoOperation.dropCollection(collectionName);
+            return true;
+        }
+        return false;
     }
 
 

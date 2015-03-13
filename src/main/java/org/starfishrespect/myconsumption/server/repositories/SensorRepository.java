@@ -9,5 +9,5 @@ import java.util.List;
 /**
  * Created by thibaud on 11.03.15.
  */
-public interface SensorRepository extends MongoRepository<Sensor, String> {
+public interface SensorRepository extends MongoRepository<Sensor, String>, SensorRepositoryCustom {
 }

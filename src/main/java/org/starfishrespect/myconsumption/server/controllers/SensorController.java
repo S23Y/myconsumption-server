@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
@@ -61,8 +62,13 @@ public class SensorController {
             throw new NotFoundException();
 
         int effectiveStart = startTime - startTime % 3600;
-        List<SensorDataset> values = mValuesRepository.getValuesForSensor(sensorId,
-                new Date(((long) effectiveStart) * 1000L), new Date(((long) endTime) * 1000L));
+
+        try {
+            List<SensorDataset> values = mValuesRepository.getSensor(new Date(((long) effectiveStart) * 1000L),
+                    new Date(((long) endTime) * 1000L));
+        } catch (DaoException e) {
+            throw new NotFoundException();
+        }
 
         return null;
 

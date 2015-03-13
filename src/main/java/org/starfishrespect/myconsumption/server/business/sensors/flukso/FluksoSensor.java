@@ -1,5 +1,7 @@
 package org.starfishrespect.myconsumption.server.business.sensors.flukso;
 
+import org.starfishrespect.myconsumption.server.entities.Sensor;
+
 /**
  * implementation of the Sensor class for Flukso sensor
  */

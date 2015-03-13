@@ -1,22 +1,47 @@
 package org.starfishrespect.myconsumption.server.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.starfishrespect.myconsumption.server.business.sensors.SensorSettings;
 
 import java.util.Date;
 
 /**
- * Created by thibaud on 11.03.15.
+ * Adapted from Patrick Herbeuval by Thibaud Ledent on 11.03.15.
+ * Class that represent a sensor in database (with all the information needed
+ * to retrieve data)
  */
 public class Sensor {
     @Id
     private String id;
     private String name;
+    @Indexed
     private String type;
     private Date firstValue = new Date(0);
     private Date lastValue = new Date(0);
     private boolean dead = false;
+    protected int usageCount = 0;
+    protected SensorSettings sensorSettings;
 
     public Sensor() { }
+
+
+    public Sensor(String name) {
+        this.name = name;
+    }
+
+    protected Sensor(String name, String type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public SensorSettings getSensorSettings() {
+        return sensorSettings;
+    }
+
+    public void setSensorSettings(SensorSettings sensorSettings) {
+        this.sensorSettings = sensorSettings;
+    }
 
     public String getId() {
         return id;
@@ -66,4 +91,25 @@ public class Sensor {
         this.dead = dead;
     }
 
+    public int getUsageCount() {
+        return usageCount;
+    }
+
+    public void setUsageCount(int usageCount) {
+        this.usageCount = usageCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", usageCount=" + usageCount +
+                ", sensorSettings=" + sensorSettings +
+                ", firstValue=" + firstValue +
+                ", lastValue=" + lastValue +
+                ", dead=" + dead +
+                '}';
+    }
 }
