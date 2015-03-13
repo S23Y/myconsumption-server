@@ -32,6 +32,7 @@ public class DataRetriever {
      * @return false if any error happened
      */
     public boolean retrieveAll() {
+        List<Sensor> list = sensorRepository.findAll();
         return retrieve(sensorRepository.findAll(), null);
     }
 

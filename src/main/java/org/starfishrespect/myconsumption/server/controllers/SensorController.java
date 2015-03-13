@@ -2,6 +2,7 @@ package org.starfishrespect.myconsumption.server.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.starfishrespect.myconsumption.server.SimpleResponse;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
@@ -103,6 +104,31 @@ public class SensorController {
 
     }
 
+    @RequestMapping(value = "/", method = RequestMethod.POST)
+    public SimpleResponse addSensor(@RequestParam(value = "type", defaultValue = "") String sensorType,
+                              @RequestParam(value = "settings", defaultValue = "") String settings,
+                              @RequestParam(value = "name", defaultValue = "") String name,
+                              @RequestParam(value = "user", defaultValue = "") String linkToUser) {
+
+        if (sensorType.equals("") || settings.equals("") || name.equals("")) {
+            throw new BadRequestException();
+        }
+        try {
+            Sensor sensor = sensorController.addSensor(sensorType, settings, name, linkToUser);
+            return new SimpleResponse(true, sensor.getId());
+        } catch (DaoException e) {
+            switch (e.getExceptionType()) {
+                case INVALID_SENSOR_SETTINGS:
+                case BAD_FORMAT_SENSOR_SETTINGS:
+                case UNKNOWN_SENSOR_TYPE:
+                    throw new BadRequestException();
+                case USER_NOT_FOUND:
+                    throw new NotFoundException();
+                default:
+                    throw new BadRequestException();
+            }
+        }
+    }
  /*
 
 
@@ -113,13 +139,7 @@ public class SensorController {
                                         @FormParam("name") String name,
                                         @FormParam("settings") @DefaultValue("") String settings);
 
-    @POST
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SimpleResponseDTO addSensor(@FormParam("type") @DefaultValue("") String sensorType,
-                                       @FormParam("settings") @DefaultValue("") String settings,
-                                       @FormParam("name") @DefaultValue("") String name,
-                                       @FormParam("user") @DefaultValue("") String linkToUser);
+
 
     @DELETE
     @Path("/")
@@ -161,27 +181,7 @@ public class SensorController {
         }
     }
 
-    @Override
-    public SimpleResponse addSensor(String sensorType, String settings, String name, String linkToUser) {
-        if (sensorType.equals("") || settings.equals("") || name.equals("")) {
-            throw new BadRequestException();
-        }
-        try {
-            Sensor sensor = sensorController.addSensor(sensorType, settings, name, linkToUser);
-            return new SimpleResponse(true, sensor.getId());
-        } catch (DaoException e) {
-            switch (e.getExceptionType()) {
-                case INVALID_SENSOR_SETTINGS:
-                case BAD_FORMAT_SENSOR_SETTINGS:
-                case UNKNOWN_SENSOR_TYPE:
-                    throw new BadRequestException();
-                case USER_NOT_FOUND:
-                    throw new NotFoundException();
-                default:
-                    throw new BadRequestException();
-            }
-        }
-    }
+
 
     @Override
     public SimpleResponse removeSensor(String sensorId) {

@@ -30,6 +30,7 @@ public class UserController {
 
     }
 
+    // TODO string password @request param ?
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)
     public SimpleResponse put(@PathVariable String name, String password) {
         if (repository.findByName(name) != null) {
@@ -94,6 +95,7 @@ public class UserController {
     }
 
 
+    // TODO
 /*    @Override
     public SimpleResponse pushToken(String username, String deviceType, String token) {
         if (deviceType == null || deviceType.equals("") || token == null || token.equals("")) {
@@ -112,6 +114,7 @@ public class UserController {
         }
     }
 
+// TODO
     @Override
     public SimpleResponse deleteToken(String username, String token) {
         if (token.equals("")) {
