@@ -1,7 +1,6 @@
 package org.starfishrespect.myconsumption.server.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
@@ -17,14 +16,15 @@ import java.util.*;
 /**
  * Tool that perform a single retrieve operation, for one or all sensors
  */
-@RestController
 public class DataRetriever {
 
-    @Autowired
     private SensorRepository sensorRepository;
-
-    @Autowired
     private ValuesRepository valuesRepository;
+
+    public DataRetriever(SensorRepository sRepo, ValuesRepository vRepo) {
+        this.sensorRepository = sRepo;
+        this.valuesRepository = vRepo;
+    }
 
     /**
      * Retrieve all data for all sensors present in database

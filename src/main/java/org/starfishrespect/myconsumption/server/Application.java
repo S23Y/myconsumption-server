@@ -3,16 +3,14 @@ package org.starfishrespect.myconsumption.server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 @SpringBootApplication
 //public class Application implements CommandLineRunner {
 public class Application {
 
-    @Autowired
-    private UserRepository repository;
+/*    @Autowired
+    private UserRepository repository;*/
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

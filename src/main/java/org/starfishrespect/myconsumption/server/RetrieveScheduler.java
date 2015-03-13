@@ -1,9 +1,12 @@
-package org.starfishrespect.myconsumption.server.business;
+package org.starfishrespect.myconsumption.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.starfishrespect.myconsumption.server.business.DataRetriever;
+import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
 import java.util.Date;
 import java.util.Timer;
@@ -20,7 +23,14 @@ public class RetrieveScheduler implements CommandLineRunner {
     private long nextRetrieve = 0;
 
     @Autowired
+    private SensorRepository sensorRepository;
+    @Autowired
+    private ValuesRepository valuesRepository;
+
     private DataRetriever retriever;
+
+/*    @Autowired
+    private DataRetriever retriever;*/
 
     public static void main(String args[]) {
         SpringApplication.run(RetrieveScheduler.class, args);
@@ -31,6 +41,7 @@ public class RetrieveScheduler implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+        retriever = new DataRetriever(sensorRepository, valuesRepository);
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
         Timer retrieveTimer = new Timer();
         retrieveTimer.schedule(new RetrieveTask(), 0);
