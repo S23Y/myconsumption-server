@@ -1,10 +1,9 @@
 package org.starfishrespect.myconsumption.server.business;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
-import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
@@ -32,7 +31,7 @@ public class DataRetriever {
      * @return false if any error happened
      */
     public boolean retrieveAll() {
-        List<Sensor> list = sensorRepository.findAll();
+        List<SensorDTO> list = sensorRepository.findAll();
         return retrieve(sensorRepository.findAll(), null);
     }
 
@@ -42,9 +41,9 @@ public class DataRetriever {
      * @param onlyThisSensorId retrieve only data for one sensor with this id
      * @return
      */
-    public boolean retrieve(List<Sensor> sensors, String onlyThisSensorId) {
+    public boolean retrieve(List<SensorDTO> sensors, String onlyThisSensorId) {
         boolean allSuccessful = true;
-        for (Sensor sensor : sensors) {
+        for (SensorDTO sensor : sensors) {
             System.out.println("Retrieve data for sensor " + sensor.getId());
             try {
                 valuesRepository.setSensor(sensor.getId());

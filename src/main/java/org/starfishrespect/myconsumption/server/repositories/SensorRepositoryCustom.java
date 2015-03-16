@@ -1,6 +1,6 @@
 package org.starfishrespect.myconsumption.server.repositories;
 
-import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 
 /**
  * Created by thibaud on 12.03.15.
@@ -21,8 +21,8 @@ public interface SensorRepositoryCustom {
 
     public boolean deleteSensor(String id);
 
-    public Sensor getSensor(String id);
+    public SensorDTO getSensor(String id);
 
-    public Sensor insertSensor(Sensor sensor);
+    public SensorDTO insertSensor(SensorDTO sensor);
 
 }

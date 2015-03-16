@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.business.dto.flukso;
+package org.starfishrespect.myconsumption.server.api.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;

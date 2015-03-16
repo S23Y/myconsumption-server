@@ -1,11 +1,11 @@
 package org.starfishrespect.myconsumption.server.business.sensors.flukso;
 
-import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 
 /**
  * implementation of the Sensor class for Flukso sensor
  */
-public class FluksoSensor extends Sensor {
+public class FluksoSensor extends SensorDTO {
 
     public FluksoSensor() {
         super();

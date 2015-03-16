@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
-import org.starfishrespect.myconsumption.server.business.dto.flukso.FluksoSensorSettingsDTO;
+import org.starfishrespect.myconsumption.server.api.dto.FluksoSensorSettingsDTO;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.entities.Sensor;
-import org.starfishrespect.myconsumption.server.entities.User;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
+import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
@@ -39,13 +39,13 @@ public class SensorController {
     private UserRepository mUserRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Sensor> getAllSensors() {
+    public List<SensorDTO> getAllSensors() {
         return mSensorRepository.findAll();
     }
 
     @RequestMapping(value = "/{sensorId}", method = RequestMethod.GET)
-    public Sensor get(@PathVariable String sensorId) {
-        Sensor sensor = mSensorRepository.findOne(sensorId);
+    public SensorDTO get(@PathVariable String sensorId) {
+        SensorDTO sensor = mSensorRepository.findOne(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
@@ -66,7 +66,7 @@ public class SensorController {
             throw new BadRequestException();
         }
 
-        Sensor sensor = mSensorRepository.findOne(sensorId);
+        SensorDTO sensor = mSensorRepository.findOne(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
@@ -123,7 +123,7 @@ public class SensorController {
             throw new BadRequestException();
         }
 
-        Sensor sensor = null;
+        SensorDTO sensor = null;
         switch (sensorType) {
             case "flukso":
                 try {
@@ -143,7 +143,7 @@ public class SensorController {
         if (linkToUser.equals("")) {
             sensor = mSensorRepository.insertSensor(sensor);
         } else {
-            User user = mUserRepository.findByName(linkToUser);
+            UserDTO user = mUserRepository.findByName(linkToUser);
             if (user != null) {
                 sensor = mSensorRepository.insertSensor(sensor);
                 user.addSensor(sensor.getId());

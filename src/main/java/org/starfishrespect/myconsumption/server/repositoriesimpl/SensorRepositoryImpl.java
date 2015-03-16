@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.Assert;
-import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepositoryCustom;
 
 /**
@@ -35,13 +35,13 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
     @Override
     public boolean incrementUsageCount(String id) {
         Update update = new Update().inc("usageCount", 1);
-        mongoOperation.updateFirst(idQuery(id), update, Sensor.class, COLLECTION_NAME);
+        mongoOperation.updateFirst(idQuery(id), update, SensorDTO.class, COLLECTION_NAME);
         return true;
     }
 
     @Override
     public int getUsageCount(String id) {
-        Sensor s = getSensor(id);
+        SensorDTO s = getSensor(id);
         if (s == null) {
             return -1;
         }
@@ -51,15 +51,15 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
     @Override
     public boolean decrementUsageCount(String id) {
         Update update = new Update().inc("usageCount", -1);
-        mongoOperation.updateFirst(idQuery(id), update, Sensor.class, COLLECTION_NAME);
+        mongoOperation.updateFirst(idQuery(id), update, SensorDTO.class, COLLECTION_NAME);
         return true;
     }
 
     @Override
     public boolean decrementUsageCountAndDeleteIfUnused(String id) {
         Update update = new Update().inc("usageCount", -1);
-        mongoOperation.updateFirst(idQuery(id), update, Sensor.class, COLLECTION_NAME);
-        Sensor s = getSensor(id);
+        mongoOperation.updateFirst(idQuery(id), update, SensorDTO.class, COLLECTION_NAME);
+        SensorDTO s = getSensor(id);
         if (s.getUsageCount() <= 0) {
             deleteSensor(s.getId());
         }
@@ -78,15 +78,15 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
     }
 
     @Override
-    public Sensor getSensor(String id) {
-        if (mongoOperation.exists(idQuery(id), Sensor.class, COLLECTION_NAME)) {
-            return mongoOperation.findOne(idQuery(id), Sensor.class, COLLECTION_NAME);
+    public SensorDTO getSensor(String id) {
+        if (mongoOperation.exists(idQuery(id), SensorDTO.class, COLLECTION_NAME)) {
+            return mongoOperation.findOne(idQuery(id), SensorDTO.class, COLLECTION_NAME);
         } else {
             return null;
         }
     }
     @Override
-    public Sensor insertSensor(Sensor sensor) {
+    public SensorDTO insertSensor(SensorDTO sensor) {
         Criteria criteria = new Criteria("type").is(sensor.getType());
         Criteria settingsCriterias = null;
         for (String key : sensor.getSensorSettings().getKeys()) {
@@ -100,8 +100,8 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
             criteria.andOperator(settingsCriterias);
         }
         Query existingQuery = new Query(criteria);
-        if (mongoOperation.exists(existingQuery, Sensor.class, COLLECTION_NAME)) {
-            return mongoOperation.findOne(existingQuery, Sensor.class, COLLECTION_NAME);
+        if (mongoOperation.exists(existingQuery, SensorDTO.class, COLLECTION_NAME)) {
+            return mongoOperation.findOne(existingQuery, SensorDTO.class, COLLECTION_NAME);
         }
         mongoOperation.save(sensor, COLLECTION_NAME);
         return sensor;

@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.entities;
+package org.starfishrespect.myconsumption.server.api.dto;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -11,7 +11,7 @@ import java.util.Date;
  * Class that represent a sensor in database (with all the information needed
  * to retrieve data)
  */
-public class Sensor {
+public class SensorDTO {
     @Id
     private String id;
     private String name;
@@ -23,14 +23,14 @@ public class Sensor {
     protected int usageCount = 0;
     protected SensorSettings sensorSettings;
 
-    public Sensor() { }
+    public SensorDTO() { }
 
 
-    public Sensor(String name) {
+    public SensorDTO(String name) {
         this.name = name;
     }
 
-    protected Sensor(String name, String type) {
+    protected SensorDTO(String name, String type) {
         this.name = name;
         this.type = type;
     }

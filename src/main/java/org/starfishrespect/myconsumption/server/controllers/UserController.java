@@ -3,7 +3,7 @@ package org.starfishrespect.myconsumption.server.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
-import org.starfishrespect.myconsumption.server.entities.User;
+import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.BadRequestException;
@@ -20,8 +20,8 @@ public class UserController {
     private UserRepository repository;
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public User get(@PathVariable String name) {
-        User user = repository.findByName(name);
+    public UserDTO get(@PathVariable String name) {
+        UserDTO user = repository.findByName(name);
 
         if (user == null)
             throw new NotFoundException();
@@ -39,7 +39,7 @@ public class UserController {
         if (password.equals("")) {
             throw new BadRequestException(new Throwable("Password is empty"));
         }
-        if (repository.save(new User(name, password)) != null) {
+        if (repository.save(new UserDTO(name, password)) != null) {
             return new SimpleResponseDTO(true, "user created");
         } else {
             return new SimpleResponseDTO(false, "Error while creating user");
@@ -48,7 +48,7 @@ public class UserController {
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.POST)
     public SimpleResponseDTO addSensor(@PathVariable String name, @PathVariable String sensorId) {
-        User user = repository.findByName(name);
+        UserDTO user = repository.findByName(name);
 
         if (user == null)
             throw new NotFoundException();
@@ -66,7 +66,7 @@ public class UserController {
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
     public SimpleResponseDTO deleteUser(@PathVariable String name) {
-        User user = repository.findByName(name);
+        UserDTO user = repository.findByName(name);
 
         if (user == null)
             throw new NotFoundException();
@@ -78,7 +78,7 @@ public class UserController {
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.DELETE)
     public SimpleResponseDTO removeSensor(@PathVariable String name, @PathVariable String sensorId) {
-        User user = repository.findByName(name);
+        UserDTO user = repository.findByName(name);
 
         if (user == null)
             throw new NotFoundException();
