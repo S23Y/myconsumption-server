@@ -1,18 +1,16 @@
 package org.starfishrespect.myconsumption.server.repositoriesimpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.util.Assert;
 import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.exception.ExceptionType;
-import org.starfishrespect.myconsumption.server.repositories.ValuesRepositoryCustom;
+import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -21,19 +19,20 @@ import java.util.TreeMap;
 /**
  * Created by thibaud on 12.03.15.
  */
-public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
+public class ValuesRepositoryImpl implements ValuesRepository {
 
-    private final MongoOperations mongoOperation;
-    private String sensor = null;
     private String collectionName = null;
+    private String sensor = null;
+    private MongoOperations mongoOperation;
+    private MongoOperations adminMongoOperation;
+    private String shardDbName = "";
 
-    @Autowired
-    public ValuesRepositoryImpl(MongoOperations operations) {
-        Assert.notNull(operations, "MongoOperations must not be null!");
-        this.mongoOperation = operations;
+    public ValuesRepositoryImpl(MongoOperations mongoOperation, MongoOperations adminMongoOperation, String shardDbName) {
+        this.mongoOperation = mongoOperation;
+        this.adminMongoOperation = adminMongoOperation;
+        this.shardDbName = shardDbName;
     }
 
-    @Override
     public void setSensor(String sensor) {
         this.sensor = sensor;
         this.collectionName = "sensor_" + sensor;
@@ -125,7 +124,6 @@ public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
         }
         return false;
     }
-
 
     private DaoException makeNoSensorException() {
         return new DaoException("You must set a sensor before doing any operation on the database.", ExceptionType.NO_SENSOR_DEFINED);

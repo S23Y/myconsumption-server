@@ -40,12 +40,12 @@ public class SensorController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Sensor> getAllSensors() {
-        return mSensorRepository.findAll();
+        return mSensorRepository.getAllSensors();
     }
 
     @RequestMapping(value = "/{sensorId}", method = RequestMethod.GET)
     public Sensor get(@PathVariable String sensorId) {
-        Sensor sensor = mSensorRepository.findOne(sensorId);
+        Sensor sensor = mSensorRepository.getSensor(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
@@ -66,7 +66,7 @@ public class SensorController {
             throw new BadRequestException();
         }
 
-        Sensor sensor = mSensorRepository.findOne(sensorId);
+        Sensor sensor = mSensorRepository.getSensor(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
@@ -117,7 +117,7 @@ public class SensorController {
     public SimpleResponseDTO addSensor(@RequestParam(value = "type", defaultValue = "") String sensorType,
                               @RequestParam(value = "settings", defaultValue = "") String settings,
                               @RequestParam(value = "name", defaultValue = "") String name,
-                              @RequestParam(value = "user", defaultValue = "") String linkToUser) {
+                              @RequestParam(value = "user", defaultValue = "") String linkToUser) throws DaoException {
 
         if (sensorType.equals("") || settings.equals("") || name.equals("")) {
             throw new BadRequestException();
@@ -143,11 +143,11 @@ public class SensorController {
         if (linkToUser.equals("")) {
             sensor = mSensorRepository.insertSensor(sensor);
         } else {
-            User user = mUserRepository.findByName(linkToUser);
+            User user = mUserRepository.getUser(linkToUser);
             if (user != null) {
                 sensor = mSensorRepository.insertSensor(sensor);
                 user.addSensor(sensor.getId());
-                mUserRepository.save(user);
+                mUserRepository.updateUser(user);
                 mSensorRepository.incrementUsageCount(sensor.getId());
             } else {
                 throw new NotFoundException();

@@ -1,14 +1,15 @@
 package org.starfishrespect.myconsumption.server.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
-import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 
 import java.util.*;
 
@@ -16,8 +17,9 @@ import java.util.*;
  * Tool that perform a single retrieve operation, for one or all sensors
  */
 public class DataRetriever {
-
+    @Autowired
     private SensorRepository sensorRepository;
+    @Autowired
     private ValuesRepository valuesRepository;
 
     public DataRetriever(SensorRepository sRepo, ValuesRepository vRepo) {
@@ -31,8 +33,8 @@ public class DataRetriever {
      * @return false if any error happened
      */
     public boolean retrieveAll() {
-        List<Sensor> list = sensorRepository.findAll();
-        return retrieve(sensorRepository.findAll(), null);
+        List<Sensor> list = sensorRepository.getAllSensors();
+        return retrieve(sensorRepository.getAllSensors(), null);
     }
 
     /**
@@ -94,7 +96,7 @@ public class DataRetriever {
                         // update, the field may have been incremented during retrieving
                         sensor.setUsageCount(currentUsageCount);
                         sensor.setDead(false);
-                        sensorRepository.save(sensor);
+                        sensorRepository.updateSensor(sensor);
                     }
                     System.out.println("retrieve successful");
                 } else {
@@ -106,7 +108,7 @@ public class DataRetriever {
                         if (sensor.getLastValue().before(new Date(cal.getTimeInMillis()))) {
                             System.out.println("So sign of live in the last 6 hours ! Set status as dead");
                             sensor.setDead(true);
-                            sensorRepository.save(sensor);
+                            sensorRepository.updateSensor(sensor);
                         }
                     } else {
                         System.out.println("Sensor is still dead");
