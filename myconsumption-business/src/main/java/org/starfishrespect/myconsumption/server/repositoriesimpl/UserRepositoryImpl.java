@@ -1,5 +1,6 @@
 package org.starfishrespect.myconsumption.server.repositoriesimpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
@@ -20,10 +21,12 @@ public class UserRepositoryImpl implements UserRepository {
     private String COLLECTION_NAME = "users";
     private static String USERNAME_PATTERN = "[A-Za-z][\\.\\w_-]*";
 
+    @Autowired
     public UserRepositoryImpl(MongoOperations mongoOperation) {
         this.mongoOperation = mongoOperation;
     }
 
+    @Autowired
     public UserRepositoryImpl(MongoOperations mongoOperation, String collectionName) {
         this.mongoOperation = mongoOperation;
         this.COLLECTION_NAME = collectionName;

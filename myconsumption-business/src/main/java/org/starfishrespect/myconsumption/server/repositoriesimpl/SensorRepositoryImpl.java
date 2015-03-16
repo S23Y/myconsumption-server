@@ -1,5 +1,6 @@
 package org.starfishrespect.myconsumption.server.repositoriesimpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,6 +18,7 @@ public class SensorRepositoryImpl implements SensorRepository {
     private MongoOperations mongoOperation;
     private String COLLECTION_NAME = "sensors";
 
+    @Autowired
     public SensorRepositoryImpl(MongoOperations mongoOperation) {
         this.mongoOperation = mongoOperation;
         this.init();

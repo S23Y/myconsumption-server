@@ -1,5 +1,6 @@
 package org.starfishrespect.myconsumption.server.repositoriesimpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.index.Index;
@@ -27,6 +28,7 @@ public class ValuesRepositoryImpl implements ValuesRepository {
     private MongoOperations adminMongoOperation;
     private String shardDbName = "";
 
+    @Autowired
     public ValuesRepositoryImpl(MongoOperations mongoOperation, MongoOperations adminMongoOperation, String shardDbName) {
         this.mongoOperation = mongoOperation;
         this.adminMongoOperation = adminMongoOperation;
