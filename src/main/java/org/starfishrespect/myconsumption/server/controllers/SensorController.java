@@ -1,20 +1,26 @@
 package org.starfishrespect.myconsumption.server.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.starfishrespect.myconsumption.server.SimpleResponse;
+import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
+import org.starfishrespect.myconsumption.server.business.dto.flukso.FluksoSensorSettingsDTO;
+import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
+import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
+import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -28,6 +34,9 @@ public class SensorController {
 
     @Autowired
     private ValuesRepository mValuesRepository;
+
+    @Autowired
+    private UserRepository mUserRepository;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<Sensor> getAllSensors() {
@@ -105,7 +114,7 @@ public class SensorController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public SimpleResponse addSensor(@RequestParam(value = "type", defaultValue = "") String sensorType,
+    public SimpleResponseDTO addSensor(@RequestParam(value = "type", defaultValue = "") String sensorType,
                               @RequestParam(value = "settings", defaultValue = "") String settings,
                               @RequestParam(value = "name", defaultValue = "") String name,
                               @RequestParam(value = "user", defaultValue = "") String linkToUser) {
@@ -113,21 +122,38 @@ public class SensorController {
         if (sensorType.equals("") || settings.equals("") || name.equals("")) {
             throw new BadRequestException();
         }
-        try {
-            Sensor sensor = sensorController.addSensor(sensorType, settings, name, linkToUser);
-            return new SimpleResponse(true, sensor.getId());
-        } catch (DaoException e) {
-            switch (e.getExceptionType()) {
-                case INVALID_SENSOR_SETTINGS:
-                case BAD_FORMAT_SENSOR_SETTINGS:
-                case UNKNOWN_SENSOR_TYPE:
+
+        Sensor sensor = null;
+        switch (sensorType) {
+            case "flukso":
+                try {
+                    ObjectMapper mapper = new ObjectMapper();
+                    FluksoSensorSettingsDTO fluksoSettings = mapper.readValue(settings, FluksoSensorSettingsDTO.class);
+                    sensor = new FluksoSensor(name, fluksoSettings.getFluksoId(), fluksoSettings.getToken());
+                    // throws RetrieveException if settings are invalid
+                    new FluksoRetriever((FluksoSensor) sensor);
+                } catch (RetrieveException | IOException e) {
                     throw new BadRequestException();
-                case USER_NOT_FOUND:
-                    throw new NotFoundException();
-                default:
-                    throw new BadRequestException();
+                }
+                break;
+            default:
+                throw new BadRequestException();
+        }
+
+        if (linkToUser.equals("")) {
+            sensor = mSensorRepository.insertSensor(sensor);
+        } else {
+            User user = mUserRepository.findByName(linkToUser);
+            if (user != null) {
+                sensor = mSensorRepository.insertSensor(sensor);
+                user.addSensor(sensor.getId());
+                mUserRepository.save(user);
+                mSensorRepository.incrementUsageCount(sensor.getId());
+            } else {
+                throw new NotFoundException();
             }
         }
+        return new SimpleResponseDTO(true, sensor.getId());
     }
  /*
 

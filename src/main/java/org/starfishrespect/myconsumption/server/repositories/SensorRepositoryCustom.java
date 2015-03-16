@@ -23,4 +23,6 @@ public interface SensorRepositoryCustom {
 
     public Sensor getSensor(String id);
 
+    public Sensor insertSensor(Sensor sensor);
+
 }

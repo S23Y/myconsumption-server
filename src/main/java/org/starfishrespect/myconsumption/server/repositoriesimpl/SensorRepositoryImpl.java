@@ -85,4 +85,26 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
             return null;
         }
     }
+    @Override
+    public Sensor insertSensor(Sensor sensor) {
+        Criteria criteria = new Criteria("type").is(sensor.getType());
+        Criteria settingsCriterias = null;
+        for (String key : sensor.getSensorSettings().getKeys()) {
+            if (settingsCriterias == null) {
+                settingsCriterias = new Criteria("sensorSettings." + key).is(sensor.getSensorSettings().getValue(key));
+            } else {
+                settingsCriterias = new Criteria("sensorSettings." + key).is(sensor.getSensorSettings().getValue(key)).andOperator(settingsCriterias);
+            }
+        }
+        if (settingsCriterias != null) {
+            criteria.andOperator(settingsCriterias);
+        }
+        Query existingQuery = new Query(criteria);
+        if (mongoOperation.exists(existingQuery, Sensor.class, COLLECTION_NAME)) {
+            return mongoOperation.findOne(existingQuery, Sensor.class, COLLECTION_NAME);
+        }
+        mongoOperation.save(sensor, COLLECTION_NAME);
+        return sensor;
+    }
+
 }

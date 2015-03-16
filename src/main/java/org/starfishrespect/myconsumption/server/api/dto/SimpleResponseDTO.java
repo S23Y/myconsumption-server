@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server;
+package org.starfishrespect.myconsumption.server.api.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * a numeric response code, and which may contain any Object as a payload
  */
 @JsonAutoDetect
-public class SimpleResponse {
+public class SimpleResponseDTO {
 
     public static final int STATUS_SUCCESS = 0;
     public static final int STATUS_FAILURE = -1;
@@ -23,10 +23,10 @@ public class SimpleResponse {
     private Object response;
 
 
-    public SimpleResponse() {
+    public SimpleResponseDTO() {
     }
 
-    public SimpleResponse(boolean success, Object value) {
+    public SimpleResponseDTO(boolean success, Object value) {
         this.response = value;
         if (success) {
             status = STATUS_SUCCESS;
@@ -35,7 +35,7 @@ public class SimpleResponse {
         }
     }
 
-    public SimpleResponse(int status, Object response) {
+    public SimpleResponseDTO(int status, Object response) {
         this.status = status;
         this.response = response;
     }
