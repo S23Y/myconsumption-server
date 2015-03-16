@@ -7,11 +7,13 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.util.Assert;
 import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.exception.ExceptionType;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
+import org.starfishrespect.myconsumption.server.repositories.ValuesRepositoryCustom;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.TreeMap;
 /**
  * Created by thibaud on 12.03.15.
  */
-public class ValuesRepositoryImpl implements ValuesRepository {
+public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
 
     private String collectionName = null;
     private String sensor = null;
@@ -28,7 +30,13 @@ public class ValuesRepositoryImpl implements ValuesRepository {
     private MongoOperations adminMongoOperation;
     private String shardDbName = "";
 
-    @Autowired
+    @Autowired(required=false)
+    public ValuesRepositoryImpl(MongoOperations operations) {
+        Assert.notNull(operations, "MongoOperations must not be null!");
+        this.mongoOperation = operations;
+    }
+
+    @Autowired(required=false)
     public ValuesRepositoryImpl(MongoOperations mongoOperation, MongoOperations adminMongoOperation, String shardDbName) {
         this.mongoOperation = mongoOperation;
         this.adminMongoOperation = adminMongoOperation;

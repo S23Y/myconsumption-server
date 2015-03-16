@@ -9,24 +9,25 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
+import org.starfishrespect.myconsumption.server.repositories.UserRepositoryCustom;
 
 import java.util.List;
 
 /**
  * Implementation of UsersDao object, using a MongoDB database
  */
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl implements UserRepositoryCustom {
 
     private MongoOperations mongoOperation;
     private String COLLECTION_NAME = "users";
     private static String USERNAME_PATTERN = "[A-Za-z][\\.\\w_-]*";
 
-    @Autowired
+    @Autowired(required=false)
     public UserRepositoryImpl(MongoOperations mongoOperation) {
         this.mongoOperation = mongoOperation;
     }
 
-    @Autowired
+    @Autowired(required=false)
     public UserRepositoryImpl(MongoOperations mongoOperation, String collectionName) {
         this.mongoOperation = mongoOperation;
         this.COLLECTION_NAME = collectionName;

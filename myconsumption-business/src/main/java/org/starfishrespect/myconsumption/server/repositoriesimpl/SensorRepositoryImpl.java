@@ -7,13 +7,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.repositories.SensorRepositoryCustom;
 
 import java.util.List;
 
 /**
  * Created by thibaud on 12.03.15.
  */
-public class SensorRepositoryImpl implements SensorRepository {
+public class SensorRepositoryImpl implements SensorRepositoryCustom {
 
     private MongoOperations mongoOperation;
     private String COLLECTION_NAME = "sensors";
