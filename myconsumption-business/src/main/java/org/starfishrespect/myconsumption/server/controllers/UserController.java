@@ -3,6 +3,7 @@ package org.starfishrespect.myconsumption.server.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
+import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
@@ -18,6 +19,9 @@ import javax.ws.rs.NotFoundException;
 public class UserController {
 
     @Autowired
+    private DozerBeanMapper dozerBeanMapper;
+
+    @Autowired
     private UserRepository repository;
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
@@ -27,7 +31,7 @@ public class UserController {
         if (user == null)
             throw new NotFoundException();
         else
-            return user;
+            return dozerBeanMapper.map(user, UserDTO.class);
 
     }
 
@@ -40,7 +44,7 @@ public class UserController {
         if (password.equals("")) {
             throw new BadRequestException(new Throwable("Password is empty"));
         }
-        if (repository.updateUser(new User(name, password))) {
+        if (repository.insertUser(new User(name, password))) {
             return new SimpleResponseDTO(true, "user created");
         } else {
             return new SimpleResponseDTO(false, "Error while creating user");

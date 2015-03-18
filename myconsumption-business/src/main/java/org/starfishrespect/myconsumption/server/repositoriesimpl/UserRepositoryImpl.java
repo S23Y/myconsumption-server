@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
-import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepositoryCustom;
 
 import java.util.List;

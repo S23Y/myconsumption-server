@@ -1,5 +1,6 @@
 package org.starfishrespect.myconsumption.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorSettings;
