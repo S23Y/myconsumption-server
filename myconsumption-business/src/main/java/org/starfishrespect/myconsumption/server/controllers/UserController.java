@@ -7,6 +7,7 @@ import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
 import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.BadRequestException;
@@ -20,11 +21,15 @@ import javax.ws.rs.NotFoundException;
 public class UserController {
 
     @Autowired
-    private UserRepository repository;
+    private UserRepository mUserRepository;
+
+    @Autowired
+    private SensorRepository mSensorRepository;
+
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
     public UserDTO get(@PathVariable String name) {
-        User user = repository.getUser(name);
+        User user = mUserRepository.getUser(name);
 
         if (user == null)
             throw new NotFoundException();
@@ -32,16 +37,18 @@ public class UserController {
             return new DozerBeanMapper().map(user, UserDTO.class);
     }
 
-    // TODO string password @request param ?
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)
-    public SimpleResponseDTO put(@PathVariable String name, String password) throws DaoException {
-        if (repository.getUser(name) != null) {
+    public SimpleResponseDTO put(@PathVariable String name,
+                                 @RequestParam(value = "password", defaultValue = "") String password)
+            throws DaoException {
+
+        if (mUserRepository.getUser(name) != null) {
             return new SimpleResponseDTO(SimpleResponseDTO.STATUS_ALREADY_EXISTS, "User already exists");
         }
         if (password.equals("")) {
             throw new BadRequestException(new Throwable("Password is empty"));
         }
-        if (repository.insertUser(new User(name, password))) {
+        if (mUserRepository.insertUser(new User(name, password))) {
             return new SimpleResponseDTO(true, "user created");
         } else {
             return new SimpleResponseDTO(false, "Error while creating user");
@@ -49,44 +56,46 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.POST)
-    public SimpleResponseDTO addSensor(@PathVariable String name, @PathVariable String sensorId) throws DaoException {
-        User user = repository.getUser(name);
+    public SimpleResponseDTO addSensor(@PathVariable String name, @PathVariable String sensorId)
+            throws DaoException {
+
+        User user = mUserRepository.getUser(name);
 
         if (user == null)
             throw new NotFoundException();
 
-        // todo: check if sensor with this ID exists
-        // NotFoundException() if it does not or:
-        //  return new SimpleResponse(false, "you already have this sensor");
+        if (!mSensorRepository.sensorExists(sensorId))
+            throw new NotFoundException();
 
-        user.addSensor(sensorId);
-        repository.updateUser(user);
-        // todo: sensorDao.incrementUsageCount(sensorId);
+        if (user.getSensors().contains(sensorId))
+            return new SimpleResponseDTO(false, "you already have this sensor");
+
+        user.getSensors().add(sensorId);
+        mUserRepository.updateUser(user);
+        mSensorRepository.incrementUsageCount(sensorId);
 
         return new SimpleResponseDTO(true, "sensor associated to the user");
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
     public SimpleResponseDTO deleteUser(@PathVariable String name) {
-        repository.deleteUser(name);
+        mUserRepository.deleteUser(name);
 
         return new SimpleResponseDTO(true, "user deleted");
     }
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.DELETE)
     public SimpleResponseDTO removeSensor(@PathVariable String name, @PathVariable String sensorId) throws DaoException {
-        User user = repository.getUser(name);
+        User user = mUserRepository.getUser(name);
 
         if (user == null)
             throw new NotFoundException();
 
-        // todo: check if sensor with this ID exists
-        // NotFoundException() if it does not or:
-        //  return new SimpleResponse(false, "you already have this sensor");
+        if (!user.getSensors().remove(sensorId))
+            throw new NotFoundException();
 
-        user.removeSensor(sensorId);
-        repository.updateUser(user);
-        //sensorDao.decrementUsageCount(sensorId);
+        mUserRepository.updateUser(user);
+        mSensorRepository.decrementUsageCount(sensorId);
 
         return new SimpleResponseDTO(true, "sensor unassociated from the user");
     }
