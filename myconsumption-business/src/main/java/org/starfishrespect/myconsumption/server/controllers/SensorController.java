@@ -151,84 +151,67 @@ public class SensorController {
         }
         return new SimpleResponseDTO(true, sensor.getId());
     }
- /*
 
+    @RequestMapping(value = "/{sensorId}", method = RequestMethod.POST)
+    public SimpleResponseDTO editSensor(@PathVariable String sensorId,
+                                       @RequestParam(value = "name") String name,
+                                       @RequestParam(value = "settings", defaultValue = "") String settings)
+            throws DaoException {
 
-    @POST
-    @Path("{sensor}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SimpleResponseDTO editSensor(@PathParam("sensor") String sensorId,
-                                        @FormParam("name") String name,
-                                        @FormParam("settings") @DefaultValue("") String settings);
-
-
-
-    @DELETE
-    @Path("/")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SimpleResponseDTO clear();
-
-    @DELETE
-    @Path("{sensor}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public SimpleResponseDTO removeSensor(@PathParam("sensor") String sensorId);
-    
-    */
-
-
-
-
-
-
- /*
-
-    @Override
-    public SimpleResponse editSensor(String sensorId, String name, String settings) {
-        try {
-            sensorController.editSensor(sensorId, name, settings);
-            return new SimpleResponse(true, "Sensor edited");
-        } catch (DaoException e) {
-            switch (e.getExceptionType()) {
-                case SENSOR_NOT_FOUND:
-                    throw new NotFoundException();
-                case NOTHING_TO_EDIT:
-                    return new SimpleResponse(false, "Nothing changed");
-                case UNKNOWN_SENSOR_TYPE:
-                case CANNOT_CHANGE_SENSOR_TYPE:
-                case BAD_FORMAT_SENSOR_SETTINGS:
-                    throw new BadRequestException();
-                default:
-                    throw new BadRequestException();
+        if (mSensorRepository.sensorExists(sensorId)) {
+            Sensor sensor = mSensorRepository.getSensor(sensorId);
+            boolean edited = false;
+            if (name != null && !name.equals("")) {
+                sensor.setName(name);
+                edited = true;
             }
+            if (settings != null && !settings.equals("")) {
+                switch (sensor.getType()) {
+                    case "flukso":
+                        try {
+                            ObjectMapper mapper = new ObjectMapper();
+                            FluksoSensorSettingsDTO fluksoSettings = mapper.readValue(settings, FluksoSensorSettingsDTO.class);
+                            if (fluksoSettings.getToken() != null && !fluksoSettings.getToken().equals(""))
+                                ((FluksoSensor) sensor).setToken(fluksoSettings.getToken());
+                        } catch (IOException e) {
+                            throw new BadRequestException();
+                        }
+                        break;
+                    default:
+                        throw new BadRequestException();
+                }
+                edited = true;
+            }
+            if (edited) {
+                mSensorRepository.updateSensor(sensor);
+            } else {
+                return new SimpleResponseDTO(false, "Nothing changed");
+            }
+        } else {
+            throw new NotFoundException();
         }
+        return new SimpleResponseDTO(true, "Sensor edited");
     }
 
-
-
-    @Override
-    public SimpleResponse removeSensor(String sensorId) {
-        try {
-            sensorController.removeSensor(sensorId);
-        } catch (DaoException e) {
-            switch (e.getExceptionType()) {
-                case SENSOR_NOT_FOUND:
-                    throw new NotFoundException();
-                case DATABASE_OPERATION_ERROR:
-                    return new SimpleResponse(false, "error while deleting sensor");
-                default:
-                    throw new BadRequestException();
-            }
+    @RequestMapping(value = "/", method = RequestMethod.DELETE)
+    public SimpleResponseDTO clear() {
+        /*
+        for (Sensor s:mSensorRepository.getAllSensors()) {
+            mSensorRepository.deleteSensor(s.getId());
         }
-        return new SimpleResponse(true, "sensor deleted");
+        return new SimpleResponseDTO(true, "database cleared");*/
+        return new SimpleResponseDTO(false, "function disabled");
     }
 
-    @Override
-    public SimpleResponse clear() {
-        *//*
-        for (Sensor s:sensorDao.getAllSensors()) {
-            sensorDao.deleteSensor(s.getId());
+    @RequestMapping(value = "/{sensorId}", method = RequestMethod.DELETE)
+    public SimpleResponseDTO removeSensor(@PathVariable String sensorId) {
+        if (mSensorRepository.sensorExists(sensorId)) {
+            if (!mSensorRepository.deleteSensor(sensorId)) {
+                return new SimpleResponseDTO(false, "error while deleting sensor");
+            }
+        } else {
+            throw new NotFoundException();
         }
-        return new SimpleResponse(true, "database cleared");*//*
-        return new SimpleResponse(false, "function disabled");
-    }*/
+        return new SimpleResponseDTO(true, "sensor deleted");
+    }
 }
