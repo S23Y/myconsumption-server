@@ -1,6 +1,5 @@
 package org.starfishrespect.myconsumption.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorSettings;
@@ -9,7 +8,7 @@ import java.util.Date;
 
 /**
  * Adapted from Patrick Herbeuval by Thibaud Ledent on 11.03.15.
- * Class that represent a sensor in database (with all the information needed
+ * Class that represents a sensor in database (with all the information needed
  * to retrieve data)
  */
 public class Sensor {
