@@ -10,6 +10,7 @@ import org.starfishrespect.myconsumption.server.api.dto.FluksoSensorSettingsDTO;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
+import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.entities.User;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -66,37 +68,25 @@ public class SensorController {
      */
     @RequestMapping(value = "/{sensorId}/data", method = RequestMethod.GET)
     public List<List<Integer>> valuesForSensor(@PathVariable String sensorId,
-                                               @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
-                                               @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) {
+                               @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
+                               @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) throws DaoException {
         if (endTime == 0)
             endTime = Integer.MAX_VALUE;
         if (startTime < 0 || endTime < 0 || startTime > endTime) {
             throw new BadRequestException();
         }
 
-        Sensor sensor = mSensorRepository.getSensor(sensorId);
-
-        if (sensor == null)
+        if (!mSensorRepository.sensorExists(sensorId))
             throw new NotFoundException();
 
         int effectiveStart = startTime - startTime % 3600;
 
-        try {
-            List<SensorDataset> values = mValuesRepository.getSensor(new Date(((long) effectiveStart) * 1000L),
-                    new Date(((long) endTime) * 1000L));
-        } catch (DaoException e) {
-            throw new NotFoundException();
-        }
-
-        return null;
-
-/*        valuesDao.setSensor(sensor);
-
-
-        int effectiveStart = startTime - startTime % 3600;
-        List<SensorDataset> daoValues = valuesDao.getSensor(new Date(((long) effectiveStart) * 1000L),
+        mValuesRepository.setSensor(sensorId);
+        List<SensorDataset> daoValues = mValuesRepository.getSensor(new Date(((long) effectiveStart) * 1000L),
                 new Date(((long) endTime) * 1000L));
-        List<List<Integer>> values = new ArrayList<List<Integer>>();
+
+        List<List<Integer>> values = new ArrayList<>();
+
         for (SensorDataset value : daoValues) {
             int start = (int) (value.getTimestamp().getTime() / 1000);
             TreeMap<Integer, MinuteValues> v = value.getValues();
@@ -109,16 +99,14 @@ public class SensorController {
                     if (time < startTime || time > endTime) {
                         continue;
                     }
-                    List<Integer> item = new ArrayList<Integer>();
+                    List<Integer> item = new ArrayList<>();
                     item.add(time);
                     item.add(value.getValues().get(key).getValue(second));
                     values.add(item);
                 }
             }
         }
-        return values;*/
-
-
+        return values;
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
