@@ -1,8 +1,10 @@
 package org.starfishrespect.myconsumption.server.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
 import org.starfishrespect.myconsumption.server.api.dto.FluksoSensorSettingsDTO;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
@@ -19,6 +21,7 @@ import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -39,18 +42,23 @@ public class SensorController {
     private UserRepository mUserRepository;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Sensor> getAllSensors() {
-        return mSensorRepository.getAllSensors();
+    public List<SensorDTO> getAllSensors() {
+
+        List<SensorDTO> result = new ArrayList<>();
+        for (Sensor s : mSensorRepository.getAllSensors()) {
+            result.add(new DozerBeanMapper().map(s, SensorDTO.class));
+        }
+        return result;
     }
 
     @RequestMapping(value = "/{sensorId}", method = RequestMethod.GET)
-    public Sensor get(@PathVariable String sensorId) {
+    public SensorDTO get(@PathVariable String sensorId) {
         Sensor sensor = mSensorRepository.getSensor(sensorId);
 
         if (sensor == null)
             throw new NotFoundException();
 
-        return sensor;
+        return new DozerBeanMapper().map(sensor, SensorDTO.class);
     }
 
     /**

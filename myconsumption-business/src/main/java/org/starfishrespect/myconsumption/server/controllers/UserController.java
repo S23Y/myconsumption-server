@@ -1,5 +1,6 @@
 package org.starfishrespect.myconsumption.server.controllers;
 
+import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
@@ -19,20 +20,16 @@ import javax.ws.rs.NotFoundException;
 public class UserController {
 
     @Autowired
-    private DozerBeanMapper dozerBeanMapper;
-
-    @Autowired
     private UserRepository repository;
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public User get(@PathVariable String name) {
+    public UserDTO get(@PathVariable String name) {
         User user = repository.getUser(name);
 
         if (user == null)
             throw new NotFoundException();
         else
-            return dozerBeanMapper.map(user, UserDTO.class);
-
+            return new DozerBeanMapper().map(user, UserDTO.class);
     }
 
     // TODO string password @request param ?
