@@ -70,6 +70,10 @@ public class SensorController {
     public List<List<Integer>> valuesForSensor(@PathVariable String sensorId,
                                @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
                                @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) throws DaoException {
+        return getValues(sensorId, startTime, endTime);
+    }
+
+    public List<List<Integer>> getValues(String sensorId, int startTime, int endTime) throws DaoException {
         if (endTime == 0)
             endTime = Integer.MAX_VALUE;
         if (startTime < 0 || endTime < 0 || startTime > endTime) {
