@@ -21,6 +21,10 @@ public class StatsOverPeriodsDTO {
         mSensorId = sensorId;
     }
 
+    public String getSensorId() {
+        return mSensorId;
+    }
+
     public List<StatDTO> getStatDTOs() {
         return mStatDTOs;
     }
