@@ -1,7 +1,7 @@
 package org.starfishrespect.myconsumption.server.repositories;
 
 import org.starfishrespect.myconsumption.server.entities.User;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public interface UserRepositoryCustom {
      *
      * @param user the user
      * @return true if the user is inserted correctly, false if it already exists
-     * @throws org.starfishrespect.myconsumption.server.exception.DaoException if the user is invalid (invalid name, null user, missing data, ...)
+     * @throws org.starfishrespect.myconsumption.server.exceptions.DaoException if the user is invalid (invalid name, null user, missing data, ...)
      */
     public boolean insertUser(User user) throws DaoException;
 
@@ -46,7 +46,7 @@ public interface UserRepositoryCustom {
      *
      * @param user the user
      * @return true if correctly updated, false if the user doesn't exists
-     * @throws org.starfishrespect.myconsumption.server.exception.DaoException if the user is invalid
+     * @throws org.starfishrespect.myconsumption.server.exceptions.DaoException if the user is invalid
      */
     public boolean updateUser(User user) throws DaoException;
 

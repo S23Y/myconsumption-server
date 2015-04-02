@@ -196,7 +196,7 @@ public class FluksoRetriever implements SensorRetriever {
         } catch (HttpClientErrorException httpException) {
             throw new RequestException(httpException.getStatusCode().value(), "Cannot retrieve data.");
         } catch (ResourceAccessException resourceException) {
-            throw new RetrieveException("Resource exception");
+            throw new RetrieveException("Resource exceptions");
         } catch (RestClientException restException) {
             throw new InvalidDataException("Non-valid data");
         }
@@ -264,7 +264,7 @@ public class FluksoRetriever implements SensorRetriever {
         try {
             FluksoParams params = restTemplate.exchange(url, HttpMethod.GET, entity, FluksoParams.class).getBody();
         } catch (ResourceAccessException e) {
-            throw new RetrieveException("Unknown retrieve exception");
+            throw new RetrieveException("Unknown retrieve exceptions");
         } catch (HttpClientErrorException httpError) {
             int errorCode = httpError.getStatusCode().value();
             switch (httpError.getStatusCode().value()) {
@@ -276,7 +276,7 @@ public class FluksoRetriever implements SensorRetriever {
                 case HttpStatus.SC_INTERNAL_SERVER_ERROR:
                     throw new ServerException(errorCode, "Resource not found");
                 default:
-                    throw new RetrieveException("Unknown retrieve exception");
+                    throw new RetrieveException("Unknown retrieve exceptions");
             }
         }
         return params;

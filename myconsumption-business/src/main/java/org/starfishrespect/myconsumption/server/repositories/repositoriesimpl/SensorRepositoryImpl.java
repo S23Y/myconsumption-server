@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.repositoriesimpl;
+package org.starfishrespect.myconsumption.server.repositories.repositoriesimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
-import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepositoryCustom;
 
 import java.util.List;

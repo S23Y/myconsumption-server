@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.repositoriesimpl;
+package org.starfishrespect.myconsumption.server.repositories.repositoriesimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.starfishrespect.myconsumption.server.entities.User;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.UserRepositoryCustom;
 
 import java.util.List;

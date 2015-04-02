@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
 import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
 import org.starfishrespect.myconsumption.server.entities.User;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 

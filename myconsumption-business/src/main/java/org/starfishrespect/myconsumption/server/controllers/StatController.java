@@ -7,7 +7,7 @@ package org.starfishrespect.myconsumption.server.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.*;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
 import javax.ws.rs.BadRequestException;

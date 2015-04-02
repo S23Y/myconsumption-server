@@ -7,8 +7,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.starfishrespect.myconsumption.server.business.dao.ValuesDao;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
-import org.starfishrespect.myconsumption.server.exception.ExceptionType;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.ExceptionType;
 import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 

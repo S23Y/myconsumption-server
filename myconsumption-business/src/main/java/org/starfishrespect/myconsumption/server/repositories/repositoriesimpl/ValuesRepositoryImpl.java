@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.repositoriesimpl;
+package org.starfishrespect.myconsumption.server.repositories.repositoriesimpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -10,9 +10,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.Assert;
 import org.starfishrespect.myconsumption.server.entities.MinuteValues;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
-import org.starfishrespect.myconsumption.server.exception.ExceptionType;
-import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.ExceptionType;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepositoryCustom;
 
 import java.util.Date;

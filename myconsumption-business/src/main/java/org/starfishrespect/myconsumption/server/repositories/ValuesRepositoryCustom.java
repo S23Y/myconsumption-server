@@ -1,7 +1,7 @@
 package org.starfishrespect.myconsumption.server.repositories;
 
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 
 import java.util.Date;
 import java.util.List;
@@ -50,7 +50,7 @@ public interface ValuesRepositoryCustom {
      * @param startTime the start of the interval
      * @param endTime   the end of the interval
      * @return the retrieved values
-     * @throws org.starfishrespect.myconsumption.server.exception.DaoException
+     * @throws org.starfishrespect.myconsumption.server.exceptions.DaoException
      */
     public List<SensorDataset> getSensor(Date startTime, Date endTime) throws DaoException;
 
@@ -59,7 +59,7 @@ public interface ValuesRepositoryCustom {
      *
      * @param sensor the sensor
      * @return true if the sensor has been correctly removed
-     * @throws org.starfishrespect.myconsumption.server.exception.DaoException
+     * @throws org.starfishrespect.myconsumption.server.exceptions.DaoException
      */
     public boolean removeSensor(String sensor) throws DaoException;
 
@@ -68,7 +68,7 @@ public interface ValuesRepositoryCustom {
      *
      * @param timestamp the hour
      * @return the values
-     * @throws org.starfishrespect.myconsumption.server.exception.DaoException
+     * @throws org.starfishrespect.myconsumption.server.exceptions.DaoException
      */
     public SensorDataset getOne(Date timestamp) throws DaoException;
 }

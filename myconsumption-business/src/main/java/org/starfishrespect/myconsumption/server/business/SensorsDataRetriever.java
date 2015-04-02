@@ -6,7 +6,7 @@ import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRe
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.exception.DaoException;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;

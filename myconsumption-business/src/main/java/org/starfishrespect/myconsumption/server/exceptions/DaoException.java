@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.exception;
+package org.starfishrespect.myconsumption.server.exceptions;
 
 /**
  * Created by pat on 19/03/14.
