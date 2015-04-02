@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.starfishrespect.myconsumption.server.business.DataRetriever;
+import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * Entry point for the data retriever service
  */
 @SpringBootApplication
-public class RetrieveScheduler implements CommandLineRunner {
+public class Watcher implements CommandLineRunner {
 
     private final long maxRetrieveInterval = 600000L; // 10 minutes
     private final long minPauseInterval = 1000L; // 1 second pause
@@ -27,13 +27,10 @@ public class RetrieveScheduler implements CommandLineRunner {
     @Autowired
     private ValuesRepository valuesRepository;
 
-    private DataRetriever retriever;
-
-/*    @Autowired
-    private DataRetriever retriever;*/
+    private SensorsDataRetriever retriever;
 
     public static void main(String args[]) {
-        SpringApplication.run(RetrieveScheduler.class, args);
+        SpringApplication.run(Watcher.class, args);
     }
 
     /**
@@ -41,7 +38,7 @@ public class RetrieveScheduler implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        retriever = new DataRetriever(sensorRepository, valuesRepository);
+        retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
         Timer retrieveTimer = new Timer();
         retrieveTimer.schedule(new RetrieveTask(), 0);
@@ -54,7 +51,7 @@ public class RetrieveScheduler implements CommandLineRunner {
             retriever.retrieveAll();
             System.out.println("Schedule retrieve ended : " + new Date().toString());
 
-            // next iteration
+            // Next iteration
             long delay = nextRetrieve - System.currentTimeMillis();
 
             if (delay < minPauseInterval) {

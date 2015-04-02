@@ -16,13 +16,13 @@ import java.util.*;
 /**
  * Tool that perform a single retrieve operation, for one or all sensors
  */
-public class DataRetriever {
+public class SensorsDataRetriever {
     @Autowired
     private SensorRepository sensorRepository;
     @Autowired
     private ValuesRepository valuesRepository;
 
-    public DataRetriever(SensorRepository sRepo, ValuesRepository vRepo) {
+    public SensorsDataRetriever(SensorRepository sRepo, ValuesRepository vRepo) {
         this.sensorRepository = sRepo;
         this.valuesRepository = vRepo;
     }
