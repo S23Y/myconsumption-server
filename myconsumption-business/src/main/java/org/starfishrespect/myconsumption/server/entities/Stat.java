@@ -1,7 +1,17 @@
-package org.starfishrespect.myconsumption.server.api.dto;
+package org.starfishrespect.myconsumption.server.entities;
 
-public class StatDTO {
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.starfishrespect.myconsumption.server.api.dto.Period;
 
+/**
+ * Created by thibaud on 02.04.15.
+ */
+public class Stat {
+
+    @Id
+    private String id;
+    @Indexed
     private String sensorId;
     private Period period;
     private Integer maxTimestamp;
@@ -12,11 +22,9 @@ public class StatDTO {
     private Integer consumption;
     private Integer diffLastTwo;
 
+    public Stat() {}
 
-    public StatDTO() {
-    }
-
-    public StatDTO(String s, Period p) {
+    public Stat(String s, Period p) {
         sensorId = s;
         period = p;
     }

@@ -30,7 +30,7 @@ public class SensorsDataRetriever {
     /**
      * Retrieve all data for all sensors present in database
      *
-     * @return false if any error happened
+     * @return false if something goes wrong; true otherwise
      */
     public boolean retrieveAll() {
         List<Sensor> list = sensorRepository.getAllSensors();
@@ -41,7 +41,7 @@ public class SensorsDataRetriever {
      * Retrieves and stores the data for one user
      *
      * @param onlyThisSensorId retrieve only data for one sensor with this id
-     * @return
+     * @return false if something goes wrong; true otherwise
      */
     public boolean retrieve(List<Sensor> sensors, String onlyThisSensorId) {
         boolean allSuccessful = true;
@@ -62,7 +62,7 @@ public class SensorsDataRetriever {
                     retriever = new FluksoRetriever((FluksoSensor) sensor);
                 }
                 if (retriever == null) {
-                    System.out.println("This sensor type has not been found !");
+                    System.out.println("This sensor type has not been found!");
                     continue;
                 }
                 TreeMap<Integer, Integer> data = retriever.getDataSince(lastValue).getData();
@@ -98,7 +98,7 @@ public class SensorsDataRetriever {
                         sensor.setDead(false);
                         sensorRepository.updateSensor(sensor);
                     }
-                    System.out.println("retrieve successful");
+                    System.out.println("Retrieve successful");
                 } else {
                     System.out.println("No values retrieved for this sensor");
                     if (!sensor.isDead()) {
@@ -106,7 +106,7 @@ public class SensorsDataRetriever {
                         Calendar cal = new GregorianCalendar();
                         cal.add(Calendar.HOUR, -6);
                         if (sensor.getLastValue().before(new Date(cal.getTimeInMillis()))) {
-                            System.out.println("So sign of live in the last 6 hours ! Set status as dead");
+                            System.out.println("Sensor has not sent anything in the last 6 hours! Set its status as dead.");
                             sensor.setDead(true);
                             sensorRepository.updateSensor(sensor);
                         }

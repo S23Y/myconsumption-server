@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
 import java.util.Date;
@@ -26,8 +27,11 @@ public class Watcher implements CommandLineRunner {
     private SensorRepository sensorRepository;
     @Autowired
     private ValuesRepository valuesRepository;
+    @Autowired
+    private StatRepository statRepository;
 
     private SensorsDataRetriever retriever;
+    private StatisticsUpdater statUpdater;
 
     public static void main(String args[]) {
         SpringApplication.run(Watcher.class, args);
@@ -39,27 +43,31 @@ public class Watcher implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
+        statUpdater = new StatisticsUpdater(sensorRepository,statRepository);
+
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
+
         Timer retrieveTimer = new Timer();
-        retrieveTimer.schedule(new RetrieveTask(), 0);
+        retrieveTimer.schedule(new WatcherTask(), 0);
     }
 
-    private class RetrieveTask extends TimerTask {
+    private class WatcherTask extends TimerTask {
         @Override
         public void run() {
-            System.out.println("Schedule retrieve started : " + new Date().toString());
+            System.out.println("Watcher timer task started : " + new Date().toString());
             retriever.retrieveAll();
-            System.out.println("Schedule retrieve ended : " + new Date().toString());
+            statUpdater.computeAll();
+            System.out.println("Watch timer task ended : " + new Date().toString());
 
             // Next iteration
             long delay = nextRetrieve - System.currentTimeMillis();
 
             if (delay < minPauseInterval) {
                 System.out.println("Next iteration will occur at " + new Date(System.currentTimeMillis() + minPauseInterval).toString());
-                new Timer().schedule(new RetrieveTask(), minPauseInterval);
+                new Timer().schedule(new WatcherTask(), minPauseInterval);
             } else {
                 System.out.println("Next iteration will occur at " + new Date(System.currentTimeMillis() + delay).toString());
-                new Timer().schedule(new RetrieveTask(), delay);
+                new Timer().schedule(new WatcherTask(), delay);
             }
             nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
         }

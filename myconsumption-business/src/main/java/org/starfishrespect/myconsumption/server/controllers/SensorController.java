@@ -38,9 +38,6 @@ public class SensorController {
     private SensorRepository mSensorRepository;
 
     @Autowired
-    private ValuesRepository mValuesRepository;
-
-    @Autowired
     private UserRepository mUserRepository;
 
     @RequestMapping(method = RequestMethod.GET)
@@ -70,47 +67,7 @@ public class SensorController {
     public List<List<Integer>> valuesForSensor(@PathVariable String sensorId,
                                @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
                                @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) throws DaoException {
-        return getValues(sensorId, startTime, endTime);
-    }
-
-    public List<List<Integer>> getValues(String sensorId, int startTime, int endTime) throws DaoException {
-        if (endTime == 0)
-            endTime = Integer.MAX_VALUE;
-        if (startTime < 0 || endTime < 0 || startTime > endTime) {
-            throw new BadRequestException();
-        }
-
-        if (!mSensorRepository.sensorExists(sensorId))
-            throw new NotFoundException();
-
-        int effectiveStart = startTime - startTime % 3600;
-
-        mValuesRepository.setSensor(sensorId);
-        List<SensorDataset> daoValues = mValuesRepository.getSensor(new Date(((long) effectiveStart) * 1000L),
-                new Date(((long) endTime) * 1000L));
-
-        List<List<Integer>> values = new ArrayList<>();
-
-        for (SensorDataset value : daoValues) {
-            int start = (int) (value.getTimestamp().getTime() / 1000);
-            TreeMap<Integer, MinuteValues> v = value.getValues();
-            if (v == null) {
-                continue;
-            }
-            for (int key : v.keySet()) {
-                for (int second : v.get(key).containedSeconds()) {
-                    int time = start + key * 60 + second;
-                    if (time < startTime || time > endTime) {
-                        continue;
-                    }
-                    List<Integer> item = new ArrayList<>();
-                    item.add(time);
-                    item.add(value.getValues().get(key).getValue(second));
-                    values.add(item);
-                }
-            }
-        }
-        return values;
+        return mSensorRepository.getValues(sensorId, startTime, endTime);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)

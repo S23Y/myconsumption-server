@@ -1,6 +1,7 @@
 package org.starfishrespect.myconsumption.server.repositories;
 
 import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public interface SensorRepositoryCustom {
     public boolean deleteSensor(String id);
 
     public boolean sensorExists(String id);
+
+    public List<List<Integer>> getValues(String sensorId, int startTime, int endTime) throws DaoException;
 
     /**
      * Initialises the database, creating all needed data structure if not existing
