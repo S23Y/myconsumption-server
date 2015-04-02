@@ -8,9 +8,11 @@ import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.spi.CalendarDataProvider;
 
 /**
  * Created by thibaud on 02.04.15.
@@ -74,15 +76,17 @@ public class StatisticsUpdater {
                     "End: " + new java.util.Date((long)getEndTime()*1000).toString() + "\n");*/
 
             List<List<Integer>> lValues = mSensorRepository.getValues(sensor, getStartTime(p), getEndTime());
-            stat.setAverage(getAverage(lValues));
-            stat.setMinValue(getMin(lValues));
-            stat.setMinTimestamp(getMinTimestamp(lValues));
-            stat.setMaxValue(getMax(lValues));
-            stat.setMaxTimestamp(getMaxTimestamp(lValues));
-            stat.setConsumption(getConsumption(lValues));
-
             List<List<Integer>> lOldValues = mSensorRepository.getValues(sensor, getStartTime(p, 2), getStartTime(p));
-            stat.setDiffLastTwo(getDiff(lValues, lOldValues));
+
+            stat.setAverage(computeAverage(lValues));
+            stat.setAverageDay(computeAverageDay(sensor, p));
+            stat.setAverageNight(computeAverageNight(sensor, p));
+            stat.setMinValue(computeMin(lValues));
+            stat.setMinTimestamp(computeMinTimestamp(lValues));
+            stat.setMaxValue(computeMax(lValues));
+            stat.setMaxTimestamp(computeMaxTimestamp(lValues));
+            stat.setConsumption(computeConsumption(lValues));
+            stat.setDiffLastTwo(computeDiff(lValues, lOldValues));
 
             mStatRepository.save(stat);
         }
@@ -124,8 +128,8 @@ public class StatisticsUpdater {
     }
 
 
-    public Integer getAverage(List<List<Integer>> lValues) {
-        if (lValues.size() == 0)
+    public Integer computeAverage(List<List<Integer>> lValues) {
+        if (lValues == null || lValues.size() == 0)
             return null;
 
         int sum = 0;
@@ -136,7 +140,101 @@ public class StatisticsUpdater {
         return sum/lValues.size();
     }
 
-    public int getMaxTimestamp(List<List<Integer>> lValues) {
+    /**
+     * Get today's date but at a given hour.
+     * @param hour the hour to set
+     * @return today's date calendar at a given hour.
+     */
+    private Calendar getCalendar(int hour) {
+        Calendar date = new GregorianCalendar();
+        date.set(Calendar.HOUR_OF_DAY, hour);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+
+        // If the hour we've just set is in the future...
+        if (date.after(new GregorianCalendar()))
+            date.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+
+        return date;
+    }
+
+    private int getNumberOfLoop(Period p) {
+        switch (p) {
+            case ALLTIME:
+                return Integer.MAX_VALUE;
+            case DAY:
+                return 1;
+            case WEEK:
+                return Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_WEEK);
+            case MONTH:
+                return Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+            case YEAR:
+                return Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_YEAR);
+            default:
+                return -1;
+        }
+    }
+
+    private Integer computeAverageNight(String sensor, Period p) throws DaoException {
+        Integer averageNight = 0;
+
+        // Find timestamps of last night (date1 = beginning, date2 = end)
+        Calendar date2 = getCalendar(7);
+        Calendar date1 = (Calendar) date2.clone();
+        date1.add(Calendar.HOUR_OF_DAY, -9);
+
+        int iMax = getNumberOfLoop(p);
+
+        for (int i = iMax - 1; i >= 0; i--) {
+
+            List<List<Integer>> lValues = mSensorRepository.getValues(
+                    sensor,
+                    (int) date1.getTimeInMillis() / 1000,
+                    (int) date2.getTimeInMillis() / 1000);
+
+            Integer avg = computeAverage(lValues);
+
+            if (avg != null)
+                averageNight += avg;
+
+            date1.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+            date2.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+        }
+
+        return averageNight;
+    }
+
+    private Integer computeAverageDay(String sensor, Period p) throws DaoException {
+        Integer averageDay = 0;
+
+        // Find timestamps of last day (date1 = beginning, date2 = end)
+        Calendar date2 = getCalendar(22);
+        Calendar date1 = (Calendar) date2.clone();
+        date1.add(Calendar.HOUR_OF_DAY, -15);
+
+        int iMax = getNumberOfLoop(p);
+
+        for (int i = iMax - 1; i >= 0; i--) {
+
+            List<List<Integer>> lValues = mSensorRepository.getValues(
+                    sensor,
+                    (int) date1.getTimeInMillis() / 1000,
+                    (int) date2.getTimeInMillis() / 1000);
+
+            Integer avg = computeAverage(lValues);
+
+            if (avg != null)
+                averageDay += avg;
+
+            date1.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+            date2.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+        }
+
+        return averageDay;
+    }
+
+    public int computeMaxTimestamp(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
 
@@ -153,7 +251,7 @@ public class StatisticsUpdater {
         return timestamp;
     }
 
-    public int getMax(List<List<Integer>> lValues) {
+    public int computeMax(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
 
@@ -168,7 +266,7 @@ public class StatisticsUpdater {
         return max;
     }
 
-    public int getMinTimestamp(List<List<Integer>> lValues) {
+    public int computeMinTimestamp(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
 
@@ -186,7 +284,7 @@ public class StatisticsUpdater {
     }
 
 
-    public int getMin(List<List<Integer>> lValues) {
+    public int computeMin(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
 
@@ -200,7 +298,7 @@ public class StatisticsUpdater {
         return min;
     }
 
-    public Integer getConsumption(List<List<Integer>> lValues) {
+    public Integer computeConsumption(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return null;
 
@@ -212,10 +310,10 @@ public class StatisticsUpdater {
         return total;
     }
 
-    private Integer getDiff(List<List<Integer>> lValues, List<List<Integer>> lOldValues) {
+    private Integer computeDiff(List<List<Integer>> lValues, List<List<Integer>> lOldValues) {
         if (lValues.size() == 0 || lOldValues.size() == 0)
             return null;
 
-        return getConsumption(lValues) - getConsumption(lOldValues);
+        return computeConsumption(lValues) - computeConsumption(lOldValues);
     }
 }

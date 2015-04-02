@@ -19,6 +19,8 @@ public class Stat {
     private Integer minTimestamp;
     private Integer minValue;
     private Integer average;
+    private Integer averageDay;
+    private Integer averageNight;
     private Integer consumption;
     private Integer diffLastTwo;
 
@@ -75,6 +77,22 @@ public class Stat {
 
     public void setAverage(Integer average) {
         this.average = average;
+    }
+
+    public Integer getAverageDay() {
+        return averageDay;
+    }
+
+    public void setAverageDay(Integer averageDay) {
+        this.averageDay = averageDay;
+    }
+
+    public Integer getAverageNight() {
+        return averageNight;
+    }
+
+    public void setAverageNight(Integer averageNight) {
+        this.averageNight = averageNight;
     }
 
     public Integer getConsumption() {
