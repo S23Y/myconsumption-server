@@ -33,7 +33,7 @@ is listed in the Maven files of the project such as [this one](https://github.co
 ## Contributing
 
 Please fork this repository and contribute back using
-[pull requests](https://github.com/S23Y/myconsumption-android/pulls).
+[pull requests](https://github.com/S23Y/myconsumption-server/pulls).
 
 Any contributions, large or small, major features, bug fixes, language translations, 
 unit/integration tests are welcomed and appreciated
