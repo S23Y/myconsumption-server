@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface StatRepository extends MongoRepository<Stat, String>  {
     List<Stat> findBySensorId(String sensorId);
+    List<Stat> findBySensorIdAndPeriod(String sensorId, Period p);
 }

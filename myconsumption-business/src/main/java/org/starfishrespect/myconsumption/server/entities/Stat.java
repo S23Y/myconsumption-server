@@ -13,14 +13,15 @@ public class Stat {
     private String id;
     @Indexed
     private String sensorId;
+    @Indexed
     private Period period;
     private Integer maxTimestamp;
     private Integer maxValue;
     private Integer minTimestamp;
     private Integer minValue;
     private Integer average;
-    private Integer averageDay;
-    private Integer averageNight;
+    private Integer consumptionDay;
+    private Integer consumptionNight;
     private Integer consumption;
     private Integer diffLastTwo;
 
@@ -79,20 +80,20 @@ public class Stat {
         this.average = average;
     }
 
-    public Integer getAverageDay() {
-        return averageDay;
+    public Integer getConsumptionDay() {
+        return consumptionDay;
     }
 
-    public void setAverageDay(Integer averageDay) {
-        this.averageDay = averageDay;
+    public void setConsumptionDay(Integer consumptionDay) {
+        this.consumptionDay = consumptionDay;
     }
 
-    public Integer getAverageNight() {
-        return averageNight;
+    public Integer getConsumptionNight() {
+        return consumptionNight;
     }
 
-    public void setAverageNight(Integer averageNight) {
-        this.averageNight = averageNight;
+    public void setConsumptionNight(Integer consumptionNight) {
+        this.consumptionNight = consumptionNight;
     }
 
     public Integer getConsumption() {

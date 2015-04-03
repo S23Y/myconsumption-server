@@ -9,10 +9,8 @@ import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.spi.CalendarDataProvider;
 
 /**
  * Created by thibaud on 02.04.15.
@@ -78,18 +76,32 @@ public class StatisticsUpdater {
             List<List<Integer>> lValues = mSensorRepository.getValues(sensor, getStartTime(p), getEndTime());
             List<List<Integer>> lOldValues = mSensorRepository.getValues(sensor, getStartTime(p, 2), getStartTime(p));
 
+            // Compute and set data for stats
             stat.setAverage(computeAverage(lValues));
-            stat.setAverageDay(computeAverageDay(sensor, p));
-            stat.setAverageNight(computeAverageNight(sensor, p));
             stat.setMinValue(computeMin(lValues));
             stat.setMinTimestamp(computeMinTimestamp(lValues));
             stat.setMaxValue(computeMax(lValues));
             stat.setMaxTimestamp(computeMaxTimestamp(lValues));
-            stat.setConsumption(computeConsumption(lValues));
+
+            Integer consoTot = computeConsumption(lValues);
+            Integer consoDay = computeConsumptionDay(sensor, p);
+            stat.setConsumption(consoTot);
+            stat.setConsumptionDay(consoDay);
+            stat.setConsumptionNight(consoTot - consoDay);
+
             stat.setDiffLastTwo(computeDiff(lValues, lOldValues));
 
+            // Remove corresponding stat from db and insert new one
+            removeExistingStats(sensor, p);
             mStatRepository.save(stat);
         }
+    }
+
+    private void removeExistingStats(String sensorId, Period p) {
+        List<Stat> stats =  mStatRepository.findBySensorIdAndPeriod(sensorId, p);
+
+        for (Stat stat : stats)
+            mStatRepository.delete(stat);
     }
 
     private int getStartTime(Period p) {
@@ -146,15 +158,21 @@ public class StatisticsUpdater {
      * @return today's date calendar at a given hour.
      */
     private Calendar getCalendar(int hour) {
-        Calendar date = new GregorianCalendar();
+        //DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Calendar date = new GregorianCalendar(); // get current time
+        //System.out.println(dateFormat.format(date.getTime())); //2014/08/06 16:00:22
         date.set(Calendar.HOUR_OF_DAY, hour);
         date.set(Calendar.MINUTE, 0);
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
 
+        //System.out.println(dateFormat.format(date.getTime())); //2014/08/06 16:00:22
+
         // If the hour we've just set is in the future...
         if (date.after(new GregorianCalendar()))
             date.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
+
+        //System.out.println(dateFormat.format(date.getTime())); //2014/08/06 16:00:22
 
         return date;
     }
@@ -176,62 +194,52 @@ public class StatisticsUpdater {
         }
     }
 
-    private Integer computeAverageNight(String sensor, Period p) throws DaoException {
-        Integer averageNight = 0;
-
-        // Find timestamps of last night (date1 = beginning, date2 = end)
-        Calendar date2 = getCalendar(7);
-        Calendar date1 = (Calendar) date2.clone();
-        date1.add(Calendar.HOUR_OF_DAY, -9);
-
-        int iMax = getNumberOfLoop(p);
-
-        for (int i = iMax - 1; i >= 0; i--) {
-
-            List<List<Integer>> lValues = mSensorRepository.getValues(
-                    sensor,
-                    (int) date1.getTimeInMillis() / 1000,
-                    (int) date2.getTimeInMillis() / 1000);
-
-            Integer avg = computeAverage(lValues);
-
-            if (avg != null)
-                averageNight += avg;
-
-            date1.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
-            date2.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
-        }
-
-        return averageNight;
-    }
-
-    private Integer computeAverageDay(String sensor, Period p) throws DaoException {
-        Integer averageDay = 0;
-
+    private Integer computeConsumptionDay(String sensorId, Period p) throws DaoException {
         // Find timestamps of last day (date1 = beginning, date2 = end)
         Calendar date2 = getCalendar(22);
         Calendar date1 = (Calendar) date2.clone();
         date1.add(Calendar.HOUR_OF_DAY, -15);
 
+        return consumptionOverDays(sensorId, p, date1, date2);
+    }
+
+    private Integer consumptionOverDays(String sensorId, Period p, Calendar date1, Calendar date2) throws DaoException {
+        Integer consumptionOverPeriod = 0;
+
+        Sensor sensor = mSensorRepository.getSensor(sensorId);
+
+        Calendar firstValue = Calendar.getInstance();
+        firstValue.setTime(sensor.getFirstValue());
+
         int iMax = getNumberOfLoop(p);
 
         for (int i = iMax - 1; i >= 0; i--) {
 
+            if (date1.before(firstValue))
+                break;
+
+//            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+//            System.out.println(dateFormat.format(date1.getTime())); //2014/08/06 16:00:22
+//            System.out.println(dateFormat.format(date2.getTime())); //2014/08/06 16:00:22
+//
+//            System.out.println((int) (date1.getTimeInMillis() / 1000));
+//            System.out.println((int) (date2.getTimeInMillis() / 1000));
+
             List<List<Integer>> lValues = mSensorRepository.getValues(
-                    sensor,
-                    (int) date1.getTimeInMillis() / 1000,
-                    (int) date2.getTimeInMillis() / 1000);
+                    sensorId,
+                    (int) (date1.getTimeInMillis() / 1000),
+                    (int) (date2.getTimeInMillis() / 1000));
 
-            Integer avg = computeAverage(lValues);
+            Integer consumptionOverSubPeriod = computeConsumption(lValues);
 
-            if (avg != null)
-                averageDay += avg;
+            if (consumptionOverSubPeriod != null)
+                consumptionOverPeriod += consumptionOverSubPeriod;
 
             date1.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
             date2.add(Calendar.DAY_OF_MONTH, -1); // ...decrement by one day
         }
 
-        return averageDay;
+        return consumptionOverPeriod;
     }
 
     public int computeMaxTimestamp(List<List<Integer>> lValues) {
