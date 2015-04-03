@@ -8,8 +8,6 @@ import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -66,6 +64,11 @@ public class StatisticsUpdater {
         return success;
     }
 
+    /**
+     * Cycle through each period of a given sensor to compute its associated stats.
+     * @param sensor sensor id of the sensor
+     * @throws DaoException thrown if something goes wrong while communicating with the db
+     */
     private void computeAllStats(String sensor) throws DaoException {
 
         for (Period p : Period.values()) {
@@ -99,6 +102,11 @@ public class StatisticsUpdater {
         }
     }
 
+    /**
+     * Remove stats in database corresponding to a given sensor id and period
+     * @param sensorId the sensor id
+     * @param p the period
+     */
     private void removeExistingStats(String sensorId, Period p) {
         List<Stat> stats =  mStatRepository.findBySensorIdAndPeriod(sensorId, p);
 
@@ -106,6 +114,11 @@ public class StatisticsUpdater {
             mStatRepository.delete(stat);
     }
 
+    /**
+     * Get the unix timestamp at which we should begin the value retrieval
+     * @param p a Period
+     * @return the unix timestamp at which we should begin the value retrieval
+     */
     private int getStartTime(Period p) {
         return getStartTime(p, 1);
     }
@@ -114,7 +127,7 @@ public class StatisticsUpdater {
      * Get the unix timestamp at which we should begin the value retrieval
      * @param period a Period
      * @param m an int used as a multiplier
-     * @return
+     * @return the unix timestamp at which we should begin the value retrieval
      */
     private int getStartTime(Period period, int m) {
         int day = 86400; // 86400 = one day in Unix Timestamp
@@ -137,11 +150,20 @@ public class StatisticsUpdater {
         }
     }
 
+    /**
+     * Get the unix timestamp at which we should end the value retrieval
+     * @return current system UNIX timestamp
+     */
     private int getEndTime() {
         return (int) (System.currentTimeMillis() / 1000L);
     }
 
 
+    /**
+     * Compute the average of the given values
+     * @param lValues the values from the sensor
+     * @return the average of the given values
+     */
     public Integer computeAverage(List<List<Integer>> lValues) {
         if (lValues == null || lValues.size() == 0)
             return null;
@@ -179,6 +201,11 @@ public class StatisticsUpdater {
         return date;
     }
 
+    /**
+     * Number of loop needed for computeConsumptionDay function
+     * @param p a Period
+     * @return the number of loops
+     */
     private int getNumberOfLoop(Period p) {
         switch (p) {
             case ALLTIME:
@@ -196,6 +223,14 @@ public class StatisticsUpdater {
         }
     }
 
+    /**
+     * Compute the consumption over day for the period p only during the day.
+     *
+     * @param sensorId the sensor id
+     * @param p a Period
+     * @return the consumption over day for the period p only during the day.
+     * @throws DaoException if something goes wrong while communicating with the db
+     */
     private Integer computeConsumptionDay(String sensorId, Period p) throws DaoException {
         // Find timestamps of last day (date1 = beginning, date2 = end)
         Calendar date2 = getCalendar(22);
@@ -205,6 +240,15 @@ public class StatisticsUpdater {
         return consumptionOverDays(sensorId, p, date1, date2);
     }
 
+    /**
+     *Compute the consumption over the given period p only during the day.
+     * @param sensorId the sensor id
+     * @param p a Period
+     * @param date1 starting day 1
+     * @param date2 starting day 2
+     * @return the consumption over the given period p only during the day.
+     * @throws DaoException if something goes wrong while communicating with the db
+     */
     private Integer consumptionOverDays(String sensorId, Period p, Calendar date1, Calendar date2) throws DaoException {
         Integer consumptionOverPeriod = 0;
 
@@ -253,6 +297,11 @@ public class StatisticsUpdater {
         return consumptionOverPeriod;
     }
 
+    /**
+     * Find timestamp associated to max value of a given set of values
+     * @param lValues set of values from the sensor
+     * @return timestamp associated to max value of a given set of values
+     */
     public int computeMaxTimestamp(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
@@ -270,6 +319,11 @@ public class StatisticsUpdater {
         return timestamp;
     }
 
+    /**
+     * Find max value of a given set of values
+     * @param lValues set of values from the sensor
+     * @return max value of a given set of values
+     */
     public int computeMax(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
@@ -285,6 +339,11 @@ public class StatisticsUpdater {
         return max;
     }
 
+    /**
+     * Find timestamp associated to min value of a given set of values
+     * @param lValues set of values from the sensor
+     * @return timestamp associated to min value of a given set of values
+     */
     public int computeMinTimestamp(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
@@ -302,7 +361,11 @@ public class StatisticsUpdater {
         return timestamp;
     }
 
-
+    /**
+     * Find min value of a given set of values
+     * @param lValues set of values from the sensor
+     * @return min value of a given set of values
+     */
     public int computeMin(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return -1;
@@ -317,6 +380,11 @@ public class StatisticsUpdater {
         return min;
     }
 
+    /**
+     * Find total consumption over of a given set of values
+     * @param lValues set of values from the sensor
+     * @return total consumption over of a given set of values
+     */
     public Integer computeConsumption(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
             return null;
@@ -329,6 +397,11 @@ public class StatisticsUpdater {
         return total;
     }
 
+    /**
+     * Diff between two total consumptions over of two sets of values
+     * @param lValues set of values from the sensor
+     * @return diff between two total consumptions over of two sets of values
+     */
     private Integer computeDiff(List<List<Integer>> lValues, List<List<Integer>> lOldValues) {
         if (lValues.size() == 0 || lOldValues.size() == 0)
             return null;
