@@ -8,6 +8,8 @@ import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -213,11 +215,20 @@ public class StatisticsUpdater {
 
         int iMax = getNumberOfLoop(p);
 
+        // Warning: loop in reverse order. Cycle through dates from now to to first value of the sensor added.
         for (int i = iMax - 1; i >= 0; i--) {
+
+            // Take week-end into account. If date1 is 7:00 AM on Sunday...
+            if (date1.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                // ... skip the weekend
+                date1.add(Calendar.DAY_OF_MONTH, -2); // decrement
+                date2.add(Calendar.DAY_OF_MONTH, -2); // decrement
+            }
 
             if (date1.before(firstValue))
                 break;
 
+//            // Print the dates and associated timestamps
 //            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 //            System.out.println(dateFormat.format(date1.getTime())); //2014/08/06 16:00:22
 //            System.out.println(dateFormat.format(date2.getTime())); //2014/08/06 16:00:22
