@@ -1,30 +1,15 @@
 package org.starfishrespect.myconsumption.server.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class User {
 
     @Id
     private String id;
-
-    @NotEmpty
-    @Column(unique = true, nullable = false)
     private String name;
-
-    @NotEmpty
     private String password;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private Set<Role> roles = new HashSet<Role>();
-
     private List<String> sensors;
 
     public User() {}
@@ -32,16 +17,15 @@ public class User {
     public User(String name, String password) {
         this.name = name;
         this.password = password;
-        sensors = new ArrayList<String>();
+        this.sensors = new ArrayList<>();
     }
-
 
     public User(User user) {
         super();
         this.id = user.getId();
         this.name = user.getName();
         this.password = user.getPassword();
-        this.roles = user.getRoles();
+        this.sensors = user.getSensors();
     }
 
 
@@ -79,14 +63,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 
 

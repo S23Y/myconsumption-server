@@ -17,7 +17,7 @@ import javax.ws.rs.NotFoundException;
  * Created by thibaud on 11.03.15.
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -25,6 +25,11 @@ public class UserController {
 
     @Autowired
     private SensorRepository mSensorRepository;
+
+    @RequestMapping("")
+    public Iterable<User> getUsers() {
+        return mUserRepository.findAll();
+    }
 
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
