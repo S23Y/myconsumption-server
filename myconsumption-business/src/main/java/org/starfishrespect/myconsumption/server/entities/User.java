@@ -2,7 +2,9 @@ package org.starfishrespect.myconsumption.server.entities;
 
 import org.springframework.data.annotation.Id;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class User {
 
@@ -11,6 +13,8 @@ public class User {
     private String name;
     private String password;
     private List<String> sensors;
+
+    private Set<Role> roles = new HashSet<Role>();
 
     public User() {}
 
@@ -26,6 +30,7 @@ public class User {
         this.name = user.getName();
         this.password = user.getPassword();
         this.sensors = user.getSensors();
+        this.roles = user.getRoles();
     }
 
 
@@ -63,6 +68,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
 
