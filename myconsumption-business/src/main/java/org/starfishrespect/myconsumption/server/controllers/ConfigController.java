@@ -10,7 +10,7 @@ import java.util.List;
  * Created by thibaud on 02.04.15.
  */
 @RestController
-@RequestMapping("/config")
+@RequestMapping("/configs")
 public class ConfigController {
     @RequestMapping(value = "/co2", method = RequestMethod.GET)
     public Double getkWhToCO2() {

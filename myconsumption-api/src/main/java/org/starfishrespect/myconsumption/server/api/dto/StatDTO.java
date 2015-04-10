@@ -1,6 +1,8 @@
 package org.starfishrespect.myconsumption.server.api.dto;
 
-public class StatDTO {
+import java.io.Serializable;
+
+public class StatDTO implements Serializable {
 
     private String sensorId;
     private Period period;
