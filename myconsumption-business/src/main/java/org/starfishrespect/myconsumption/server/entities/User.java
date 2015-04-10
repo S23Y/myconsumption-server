@@ -1,17 +1,30 @@
 package org.starfishrespect.myconsumption.server.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class User {
 
     @Id
     private String id;
 
+    @NotEmpty
+    @Column(unique = true, nullable = false)
     private String name;
+
+    @NotEmpty
     private String password;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private Set<Role> roles = new HashSet<Role>();
+
     private List<String> sensors;
 
     public User() {}
@@ -20,6 +33,15 @@ public class User {
         this.name = name;
         this.password = password;
         sensors = new ArrayList<String>();
+    }
+
+
+    public User(User user) {
+        super();
+        this.id = user.getId();
+        this.name = user.getName();
+        this.password = user.getPassword();
+        this.roles = user.getRoles();
     }
 
 
@@ -34,6 +56,15 @@ public class User {
         return sensors == null ? "" : sensors.toString();
     }
 
+    // Getters and setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -41,6 +72,23 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
 
     public List<String> getSensors() {
         return sensors;
@@ -55,7 +103,7 @@ public class User {
     }
 
     public void removeSensor(String sensorId) {
-        for (int i = 0; i < sensors.size(); i ++) {
+        for (int i = 0; i < sensors.size(); i++) {
             if (sensors.get(i).equals(sensorId)) {
                 sensors.remove(i);
                 return;
