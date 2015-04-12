@@ -59,6 +59,7 @@ public class OAuth2ServerConfiguration {
                     .authorizeRequests()
                     .antMatchers("/users").hasRole("ADMIN")
                     .antMatchers("/greeting").authenticated();
+                    // TODO
             // @formatter:on
         }
 
