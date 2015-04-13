@@ -1,6 +1,6 @@
 # MyConsumption Server + API
 
-[![MyConsumption Server](https://dl.dropboxusercontent.com/u/22987083/banner-myconsumption-server%20v2.png)](http://s23y.org)
+[![MyConsumption Server](https://dl.dropboxusercontent.com/u/22987083/banner-myconsumption-server.png)](http://s23y.org)
 
 This repository contains the source code for the S23Y MyConsumption Server and API.
 
