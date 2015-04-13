@@ -18,11 +18,11 @@ public class User {
 
     public User() {}
 
-    public User(String name, String password) {
-        this.name = name;
-        this.password = password;
-        this.sensors = new ArrayList<>();
-    }
+//    public User(String name, String password) {
+//        this.name = name;
+//        this.password = password;
+//        this.sensors = new ArrayList<>();
+//    }
 
     public User(User user) {
         super();
