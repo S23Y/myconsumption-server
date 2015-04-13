@@ -16,11 +16,9 @@
 
 package org.starfishrespect.myconsumption.server;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -30,85 +28,169 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 
 @Configuration
 public class OAuth2ServerConfiguration {
 
-    private static final String RESOURCE_ID = "restservice";
-
     @Configuration
     @EnableResourceServer
-    protected static class ResourceServerConfiguration extends
-            ResourceServerConfigurerAdapter {
-
-        @Override
-        public void configure(ResourceServerSecurityConfigurer resources) {
-            // @formatter:off
-            resources
-                    .resourceId(RESOURCE_ID);
-            // @formatter:on
-        }
+    protected static class ResourceServer extends ResourceServerConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             // @formatter:off
             http
+                    // Just for laughs, apply OAuth protection to only 2 resources
+                    .requestMatchers().antMatchers("/","/greeting").and()
                     .authorizeRequests()
-                    .antMatchers("/users").hasRole("ADMIN")
-                    .antMatchers("/greeting").authenticated();
-                    // TODO
+                    .anyRequest().access("#oauth2.hasScope('read')");
             // @formatter:on
+        }
+
+        @Override
+        public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+            resources.resourceId("sparklr");
         }
 
     }
 
     @Configuration
     @EnableAuthorizationServer
-    protected static class AuthorizationServerConfiguration extends
-            AuthorizationServerConfigurerAdapter {
-
-        private TokenStore tokenStore = new InMemoryTokenStore();
+    protected static class AuthorizationServerConfiguration
+            extends AuthorizationServerConfigurerAdapter {
 
         @Autowired
-        @Qualifier("authenticationManagerBean")
         private AuthenticationManager authenticationManager;
 
         @Override
-        public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-                throws Exception {
-            // @formatter:off
-            endpoints
-                    .tokenStore(this.tokenStore)
-                    .authenticationManager(this.authenticationManager);
-            // @formatter:on
+        public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+            endpoints.authenticationManager(authenticationManager);
         }
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            // @formatter:off
-            clients
-                    .inMemory()
-                    .withClient("clientapp")
-                    .authorizedGrantTypes("password", "refresh_token")
-                    .authorities("USER")
-                    .scopes("read", "write")
-                    .resourceIds(RESOURCE_ID)
-                    .secret("123456");
-            // @formatter:on
+                // @formatter:off
+                clients.inMemory()
+                .withClient("my-trusted-client")
+                    .authorizedGrantTypes("password", "authorization_code", "refresh_token", "implicit")
+                    .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
+                    .scopes("read", "write", "trust")
+                    .resourceIds("sparklr")
+                    .accessTokenValiditySeconds(60)
+            .and()
+                .withClient("my-client-with-registered-redirect")
+                    .authorizedGrantTypes("authorization_code")
+                    .authorities("ROLE_CLIENT")
+                    .scopes("read", "trust")
+                    .resourceIds("sparklr")
+                    .redirectUris("http://anywhere?key=value")
+            .and()
+                .withClient("my-client-with-secret")
+                    .authorizedGrantTypes("client_credentials", "password")
+                    .authorities("ROLE_CLIENT")
+                    .scopes("read")
+                    .resourceIds("sparklr")
+                    .secret("secret");
+                // @formatter:on
         }
-
-        @Bean
-        @Primary
-        public DefaultTokenServices tokenServices() {
-            DefaultTokenServices tokenServices = new DefaultTokenServices();
-            tokenServices.setSupportRefreshToken(true);
-            tokenServices.setTokenStore(this.tokenStore);
-            return tokenServices;
-        }
-
     }
 
 }
+
+
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Qualifier;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.context.annotation.Primary;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+//import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+//import org.springframework.security.oauth2.provider.token.TokenStore;
+//import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+//
+//@Configuration
+//public class OAuth2ServerConfiguration {
+//
+//    private static final String RESOURCE_ID = "restservice";
+//
+//    @Configuration
+//    @EnableResourceServer
+//    protected static class ResourceServerConfiguration extends
+//            ResourceServerConfigurerAdapter {
+//
+//        @Override
+//        public void configure(ResourceServerSecurityConfigurer resources) {
+//            // @formatter:off
+//            resources
+//                    .resourceId(RESOURCE_ID);
+//            // @formatter:on
+//        }
+//
+//        @Override
+//        public void configure(HttpSecurity http) throws Exception {
+//            // @formatter:off
+//            http
+//                    .authorizeRequests()
+//                    .antMatchers("/users").hasRole("ADMIN")
+//                    .antMatchers("/greeting").authenticated();
+//                    // TODO
+//            // @formatter:on
+//        }
+//
+//    }
+//
+//    @Configuration
+//    @EnableAuthorizationServer
+//    protected static class AuthorizationServerConfiguration extends
+//            AuthorizationServerConfigurerAdapter {
+//
+//        private TokenStore tokenStore = new InMemoryTokenStore();
+//
+//        @Autowired
+//        @Qualifier("authenticationManagerBean")
+//        private AuthenticationManager authenticationManager;
+//
+//        @Override
+//        public void configure(AuthorizationServerEndpointsConfigurer endpoints)
+//                throws Exception {
+//            // @formatter:off
+//            endpoints
+//                    .tokenStore(this.tokenStore)
+//                    .authenticationManager(this.authenticationManager);
+//            // @formatter:on
+//        }
+//
+//        @Override
+//        public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+//            // @formatter:off
+//            clients
+//                    .inMemory()
+//                    .withClient("clientapp")
+////                    .authorizedGrantTypes("password", "refresh_token")
+////                    .authorities("USER")
+//                    .scopes("read", "write")
+//                    .resourceIds(RESOURCE_ID)
+//                    .secret("123456");
+//            // @formatter:on
+//        }
+//
+//        @Bean
+//        @Primary
+//        public DefaultTokenServices tokenServices() {
+//            DefaultTokenServices tokenServices = new DefaultTokenServices();
+//            tokenServices.setSupportRefreshToken(true);
+//            tokenServices.setTokenStore(this.tokenStore);
+//            return tokenServices;
+//        }
+//
+//    }
+//
+//}
