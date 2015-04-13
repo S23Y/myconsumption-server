@@ -18,11 +18,12 @@ package org.starfishrespect.myconsumption.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import java.util.Collection;
@@ -42,51 +43,52 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByName(username);
+        org.starfishrespect.myconsumption.server.entities.User user = userRepository.findByName(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("User %s does not exist!", username));
         }
-        return new UserRepositoryUserDetails(user);
+        return new User(user.getName(), user.getPassword(), true, true, true, true,
+                AuthorityUtils.createAuthorityList("USER"));
     }
 
-    private final static class UserRepositoryUserDetails extends User implements UserDetails {
-
-        private static final long serialVersionUID = 1L;
-
-        private UserRepositoryUserDetails(User user) {
-            super(user);
-        }
-
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return getRoles();
-        }
-
-        @Override
-        public String getUsername() {
-            return getName();
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return true;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return true;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-
-    }
+//    private final static class UserRepositoryUserDetails extends User implements UserDetails {
+//
+//        private static final long serialVersionUID = 1L;
+//
+//        private UserRepositoryUserDetails(User user) {
+//            super(user);
+//        }
+//
+//        @Override
+//        public Collection<? extends GrantedAuthority> getAuthorities() {
+//            return getRoles();
+//        }
+//
+//        @Override
+//        public String getUsername() {
+//            return getName();
+//        }
+//
+//        @Override
+//        public boolean isAccountNonExpired() {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean isAccountNonLocked() {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean isCredentialsNonExpired() {
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean isEnabled() {
+//            return true;
+//        }
+//
+//    }
 
 }

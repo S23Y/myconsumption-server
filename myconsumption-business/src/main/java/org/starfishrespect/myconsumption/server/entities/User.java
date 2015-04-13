@@ -14,30 +14,30 @@ public class User {
     private String password;
     private List<String> sensors;
 
-    private Set<Role> roles = new HashSet<Role>();
+//    private Set<Role> roles = new HashSet<Role>();
 
     public User() {}
 
-//    public User(String name, String password) {
-//        this.name = name;
-//        this.password = password;
-//        this.sensors = new ArrayList<>();
-//    }
-
-    public User(User user) {
-        super();
-        this.id = user.getId();
-        this.name = user.getName();
-        this.password = user.getPassword();
-        this.sensors = user.getSensors();
-        this.roles = user.getRoles();
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+        this.sensors = new ArrayList<>();
     }
+
+//    public User(User user) {
+//        super();
+//        this.id = user.getId();
+//        this.name = user.getName();
+//        this.password = user.getPassword();
+//        this.sensors = user.getSensors();
+//        this.roles = user.getRoles();
+//    }
 
 
     @Override
     public String toString() {
         return String.format(
-                "Customer[id=%s, name='%s', sensors='%s']",
+                "User[id=%s, name='%s', sensors='%s']",
                 id, name, this.printSensors());
     }
 
@@ -70,13 +70,13 @@ public class User {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
+//    public Set<Role> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(Set<Role> roles) {
+//        this.roles = roles;
+//    }
 
 
     public List<String> getSensors() {
