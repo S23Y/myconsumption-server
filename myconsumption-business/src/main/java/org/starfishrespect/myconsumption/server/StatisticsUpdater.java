@@ -166,7 +166,7 @@ public class StatisticsUpdater {
      */
     public Integer computeAverage(List<List<Integer>> lValues) {
         if (lValues == null || lValues.size() == 0)
-            return null;
+            return 0;
 
         int sum = 0;
 
@@ -387,7 +387,7 @@ public class StatisticsUpdater {
      */
     public Integer computeConsumption(List<List<Integer>> lValues) {
         if (lValues.size() == 0)
-            return null;
+            return 0;
 
         int total = 0;
 
@@ -404,7 +404,7 @@ public class StatisticsUpdater {
      */
     private Integer computeDiff(List<List<Integer>> lValues, List<List<Integer>> lOldValues) {
         if (lValues.size() == 0 || lOldValues.size() == 0)
-            return null;
+            return 0;
 
         return computeConsumption(lValues) - computeConsumption(lOldValues);
     }
