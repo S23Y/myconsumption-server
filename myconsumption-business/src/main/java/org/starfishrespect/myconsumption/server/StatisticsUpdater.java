@@ -259,7 +259,7 @@ public class StatisticsUpdater {
 
         int iMax = getNumberOfLoop(p);
 
-        // Warning: loop in reverse order. Cycle through dates from now to to first value of the sensor added.
+        // Warning: loop in reverse order. Cycle through dates from now to the first value of the sensor added.
         for (int i = iMax - 1; i >= 0; i--) {
 
             // Take week-end into account. If date1 is 7:00 AM on Sunday...
