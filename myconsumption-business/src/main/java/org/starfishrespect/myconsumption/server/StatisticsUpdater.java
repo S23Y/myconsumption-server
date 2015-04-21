@@ -29,28 +29,19 @@ public class StatisticsUpdater {
     }
 
     /**
-     * Compute all data for all sensors present in database
+     * Compute statistics for all sensors present in database
      *
      * @return false if something goes wrong; true otherwise
      */
     public boolean computeAll() {
-        List<Sensor> list = mSensorRepository.getAllSensors();
-        return compute(mSensorRepository.getAllSensors());
-    }
-
-    /**
-     * Retrieves and stores the data for one user
-     *
-     * @return false if something goes wrong; true otherwise
-     */
-    public boolean compute(List<Sensor> sensors) {
+        List<Sensor> sensors = mSensorRepository.getAllSensors();
         boolean success = true;
 
         for (Sensor sensor : sensors) {
             System.out.println("Compute stats for sensor " + sensor.getId());
 
             try {
-                computeAllStats(sensor.getId());
+                computeStatsForSensor(sensor.getId());
             } catch (Exception e) {
                 System.out.println("Error while computing stats for this sensor...");
                 e.printStackTrace();
@@ -69,7 +60,7 @@ public class StatisticsUpdater {
      * @param sensor sensor id of the sensor
      * @throws DaoException thrown if something goes wrong while communicating with the db
      */
-    private void computeAllStats(String sensor) throws DaoException {
+    private void computeStatsForSensor(String sensor) throws DaoException {
 
         for (Period p : Period.values()) {
             Stat stat = new Stat(sensor, p);
