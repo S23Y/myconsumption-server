@@ -380,12 +380,12 @@ public class StatisticsUpdater {
         if (lValues.size() == 0)
             return 0;
 
-        int total = 0;
+        double total = 0.0;
 
         for (List<Integer> l : lValues)
             total += l.get(1);
 
-        return total;
+        return (int) (total / lValues.size());
     }
 
     /**
