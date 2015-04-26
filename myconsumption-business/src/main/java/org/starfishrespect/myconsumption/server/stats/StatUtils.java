@@ -4,6 +4,7 @@ import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -105,9 +106,7 @@ public class StatUtils {
     public static double getMultiplierForPeriod(Period period, Sensor sensor) {
         switch (period) {
             case ALLTIME:
-                Calendar firstValue = Calendar.getInstance();
-                firstValue.setTime(sensor.getFirstValue());
-                return getEndTime() - (firstValue.getTimeInMillis() / 1000L);
+                return date2TimeStamp(sensor.getLastValue()) - date2TimeStamp(sensor.getFirstValue());
             case DAY:
                 return 60 * 24;
             case WEEK:
@@ -121,4 +120,7 @@ public class StatUtils {
         }
     }
 
+    private static long date2TimeStamp(Date date) {
+        return date.getTime()/1000;
+    }
 }
