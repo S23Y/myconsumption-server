@@ -8,6 +8,7 @@ import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
+import org.starfishrespect.myconsumption.server.stats.StatisticsUpdater;
 
 import java.util.Date;
 import java.util.Timer;
