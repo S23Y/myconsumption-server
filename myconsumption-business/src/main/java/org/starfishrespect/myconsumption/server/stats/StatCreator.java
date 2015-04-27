@@ -46,10 +46,10 @@ public class StatCreator {
         stat.setMaxTimestamp(computeMaxTimestamp());
 
 //        Double consoTot = computeConsumption();
-        Integer avgDay = computeAverageDay();
+//        Integer avgDay = computeAverageDay();
 //        stat.setConsumption(consoTot);
-        stat.setConsumptionDay(avgDay);
-        stat.setConsumptionNight(avg - avgDay);
+//        stat.setConsumptionDay(avgDay);
+//        stat.setConsumptionNight(avg - avgDay);
 //
         stat.setDiffLastTwo(computeDiff());
 
