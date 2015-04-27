@@ -65,7 +65,7 @@ public class StatisticsUpdater {
             List<List<Integer>> oldValues = mSensorRepository.getValues(id, StatUtils.getStartTime(p, 2), StatUtils.getStartTime(p));
             Sensor sensor = mSensorRepository.getSensor(id);
 
-            StatCreator creator = new StatCreator(sensor, p, values, oldValues);
+            StatCreator creator = new StatCreator(mSensorRepository, sensor, p, values, oldValues);
             Stat stat = creator.createStat();
 
             // Remove corresponding stat from db and insert new one

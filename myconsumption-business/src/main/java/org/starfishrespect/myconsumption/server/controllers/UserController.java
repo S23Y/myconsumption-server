@@ -17,7 +17,7 @@ import javax.ws.rs.NotFoundException;
  * Created by thibaud on 11.03.15.
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
