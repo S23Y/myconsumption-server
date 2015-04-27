@@ -10,10 +10,10 @@ public class StatDTO implements Serializable {
     private Integer maxValue;
     private Integer minTimestamp;
     private Integer minValue;
-    private Integer average;
-    private Integer consumptionDay;
-    private Integer consumptionNight;
-    private Integer consumption;
+    private Integer averageConsumption;
+//    private Integer consumptionDay;
+//    private Integer consumptionNight;
+//    private Integer consumption;
     private Integer diffLastTwo;
 
 
@@ -65,37 +65,37 @@ public class StatDTO implements Serializable {
         this.minValue = minValue;
     }
 
-    public Integer getAverage() {
-        return average;
+    public Integer getAverageConsumption() {
+        return averageConsumption;
     }
 
-    public void setAverage(Integer average) {
-        this.average = average;
+    public void setAverageConsumption(Integer averageConsumption) {
+        this.averageConsumption = averageConsumption;
     }
 
-    public Integer getConsumptionDay() {
-        return consumptionDay;
-    }
-
-    public void setConsumptionDay(Integer consumptionDay) {
-        this.consumptionDay = consumptionDay;
-    }
-
-    public Integer getConsumptionNight() {
-        return consumptionNight;
-    }
-
-    public void setConsumptionNight(Integer consumptionNight) {
-        this.consumptionNight = consumptionNight;
-    }
-
-    public Integer getConsumption() {
-        return consumption;
-    }
-
-    public void setConsumption(Integer consumption) {
-        this.consumption = consumption;
-    }
+//    public Integer getConsumptionDay() {
+//        return consumptionDay;
+//    }
+//
+//    public void setConsumptionDay(Integer consumptionDay) {
+//        this.consumptionDay = consumptionDay;
+//    }
+//
+//    public Integer getConsumptionNight() {
+//        return consumptionNight;
+//    }
+//
+//    public void setConsumptionNight(Integer consumptionNight) {
+//        this.consumptionNight = consumptionNight;
+//    }
+//
+//    public Integer getConsumption() {
+//        return consumption;
+//    }
+//
+//    public void setConsumption(Integer consumption) {
+//        this.consumption = consumption;
+//    }
 
     public Integer getDiffLastTwo() {
         return diffLastTwo;
