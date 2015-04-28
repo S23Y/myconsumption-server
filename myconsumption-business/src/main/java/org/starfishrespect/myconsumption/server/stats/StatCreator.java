@@ -81,7 +81,7 @@ public class StatCreator {
             if(duration == 0)
                 continue;
 
-            total += currentValue * (duration * StatUtils.getMultiplierForPeriod((int)duration, sensor)) / 60.0;
+            total += currentValue * duration / (60.0 * 60.0);
         }
 
         return (int) total;
