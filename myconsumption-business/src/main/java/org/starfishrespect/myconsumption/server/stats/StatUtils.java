@@ -103,21 +103,23 @@ public class StatUtils {
         }
     }
 
-    public static double getMultiplierForPeriod(Period period, Sensor sensor) {
-        switch (period) {
-            case ALLTIME:
-                return date2TimeStamp(sensor.getLastValue()) - date2TimeStamp(sensor.getFirstValue());
-            case DAY:
-                return 60 * 24;
-            case WEEK:
-                return 60 * 24 * 7;
-            case MONTH:
-                return 60 * 24 * Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
-            case YEAR:
-                return 60 * 24 * Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_YEAR);
-            default:
-                return -1;
-        }
+    public static double getMultiplierForPeriod(int duration, Sensor sensor) {
+        System.out.println(duration);
+        return 1;
+//        switch (duration) {
+//            case ALLTIME:
+//                return date2TimeStamp(sensor.getLastValue()) - date2TimeStamp(sensor.getFirstValue());
+//            case DAY:
+//                return 60 * 24;
+//            case WEEK:
+//                return 60 * 24 * 7;
+//            case MONTH:
+//                return 60 * 24 * Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+//            case YEAR:
+//                return 60 * 24 * Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_YEAR);
+//            default:
+//                return -1;
+//        }
     }
 
     private static long date2TimeStamp(Date date) {

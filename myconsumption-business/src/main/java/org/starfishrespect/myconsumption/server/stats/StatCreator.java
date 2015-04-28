@@ -38,22 +38,53 @@ public class StatCreator {
         Stat stat = new Stat(sensor.getId(), period);
 
         // Compute and set data for stats
-        int avg  = computeAverage(values);
-        stat.setAverageConsumption(avg);
+        System.out.println("\n\n\n\n" + period.toString() + " sensor: " + sensor.getName());
+
+        stat.setAverage(computeAverage(values));
         stat.setMinValue(computeMin());
         stat.setMinTimestamp(computeMinTimestamp());
         stat.setMaxValue(computeMax());
         stat.setMaxTimestamp(computeMaxTimestamp());
 
-//        Double consoTot = computeConsumption();
-//        Integer avgDay = computeAverageDay();
-//        stat.setConsumption(consoTot);
-//        stat.setConsumptionDay(avgDay);
-//        stat.setConsumptionNight(avg - avgDay);
-//
+        int consoTot = computeConsumption();
+        Integer avgDay = computeAverageDay();
+        stat.setConsumption(consoTot);
+        stat.setConsumptionDay(avgDay);
+        stat.setConsumptionNight(consoTot - avgDay);
+
         stat.setDiffLastTwo(computeDiff());
 
         return stat;
+    }
+
+    /**
+     * Find total consumption over of a given set of values
+     * @return total consumption over of a given set of values
+     */
+    private Integer computeConsumption() {
+        if (values.size() == 0)
+            return 0;
+
+        double total = 0.0;
+
+        for (int i = 0; i < values.size(); i++) {
+            double currentValue = values.get(i).get(1);
+            double duration;
+
+            if (i + 1 < values.size())
+                duration = values.get(i + 1).get(0) - values.get(i).get(0);
+            else
+                duration = values.get(i - 1).get(0) - values.get(i).get(0);
+
+            duration =  duration > 0 ? duration : -duration;
+
+            if(duration == 0)
+                continue;
+
+            total += currentValue * (duration * StatUtils.getMultiplierForPeriod((int)duration, sensor)) / 60.0;
+        }
+
+        return (int) total;
     }
 
     /**

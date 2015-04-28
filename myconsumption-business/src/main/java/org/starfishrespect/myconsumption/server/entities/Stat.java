@@ -19,9 +19,10 @@ public class Stat {
     private Integer maxValue;
     private Integer minTimestamp;
     private Integer minValue;
-    private Integer averageConsumption;
-//    private Integer consumptionDay;
-//    private Integer consumptionNight;
+    private Integer average;
+    private Integer consumption;
+    private Integer consumptionDay;
+    private Integer consumptionNight;
     private Integer diffLastTwo;
 
     public Stat() {}
@@ -71,29 +72,37 @@ public class Stat {
         this.minValue = minValue;
     }
 
-    public Integer getAverageConsumption() {
-        return averageConsumption;
+    public Integer getAverage() {
+        return average;
     }
 
-    public void setAverageConsumption(Integer averageConsumption) {
-        this.averageConsumption = averageConsumption;
+    public void setAverage(Integer average) {
+        this.average = average;
     }
 
-//    public Integer getConsumptionDay() {
-//        return consumptionDay;
-//    }
-//
-//    public void setConsumptionDay(Integer consumptionDay) {
-//        this.consumptionDay = consumptionDay;
-//    }
-//
-//    public Integer getConsumptionNight() {
-//        return consumptionNight;
-//    }
-//
-//    public void setConsumptionNight(Integer consumptionNight) {
-//        this.consumptionNight = consumptionNight;
-//    }
+    public Integer getConsumption() {
+        return consumption;
+    }
+
+    public void setConsumption(Integer consumption) {
+        this.consumption = consumption;
+    }
+
+    public Integer getConsumptionDay() {
+        return consumptionDay;
+    }
+
+    public void setConsumptionDay(Integer consumptionDay) {
+        this.consumptionDay = consumptionDay;
+    }
+
+    public Integer getConsumptionNight() {
+        return consumptionNight;
+    }
+
+    public void setConsumptionNight(Integer consumptionNight) {
+        this.consumptionNight = consumptionNight;
+    }
 
     public Integer getDiffLastTwo() {
         return diffLastTwo;
