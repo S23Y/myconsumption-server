@@ -12,6 +12,8 @@ import java.util.GregorianCalendar;
  */
 public class StatUtils {
 
+    private static Date sDateAtMidnight;
+
     /**
      * Get the unix timestamp at which we should begin the value retrieval
      * @param p a Period
@@ -122,7 +124,28 @@ public class StatUtils {
 //        }
     }
 
-    private static long date2TimeStamp(Date date) {
-        return date.getTime()/1000;
+    /**
+     * Converts a date to a unix timestamp in seconds.
+     * @param date a Date to convert
+     * @return a int corresponding to the Date in unix epoch timestamp (seconds)
+     */
+    public static int date2TimeStamp(Date date) {
+        return (int) (date.getTime()/1000L);
+    }
+
+    /**
+     * Get today's date at midnight.
+     * For example, if we are on Thursday 9th April at 11:00 PM, it will return Thursday 9th April at 00:00 AM
+     * @return today's Date at midnight
+     */
+    public static Date getDateAtMidnight() {
+        // today
+        Calendar date = new GregorianCalendar();
+        // reset hour, minutes, seconds and millis
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
+        return date.getTime();
     }
 }
