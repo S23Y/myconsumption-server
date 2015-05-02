@@ -2,7 +2,6 @@ package org.starfishrespect.myconsumption.server.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.starfishrespect.myconsumption.server.api.dto.Period;
 
 import java.util.Date;
 

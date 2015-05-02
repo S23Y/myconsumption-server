@@ -134,6 +134,15 @@ public class StatUtils {
     }
 
     /**
+     * Converts a unix timestamp in seconds to a Date.
+     * @param timestamp a timestamp to convert
+     * @return a Date corresponding to the timestamp in unix epoch timestamp (seconds)
+     */
+    public static Date timestamp2Date(long timestamp) {
+        return new Date(timestamp*1000);
+    }
+
+    /**
      * Get today's date at midnight.
      * For example, if we are on Thursday 9th April at 11:00 PM, it will return Thursday 9th April at 00:00 AM
      * @return today's Date at midnight

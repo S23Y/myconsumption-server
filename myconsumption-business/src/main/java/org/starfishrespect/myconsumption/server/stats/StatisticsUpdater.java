@@ -121,6 +121,8 @@ public class StatisticsUpdater {
             e.printStackTrace();
         }
 
+        if (dayStat != null)
+            System.out.println(dayStat.getDay() + "  consumption: " + dayStat.getConsumption());
 
 
     }
