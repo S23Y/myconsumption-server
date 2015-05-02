@@ -12,14 +12,11 @@ import java.util.List;
  * Created by thibaud on 01.05.15.
  */
 public class DayStatCreator {
-    @Autowired
-    private final SensorRepository sensorRepository;
     private final Sensor sensor;
     private final List<List<Integer>> values;
     private final int currentDay;
 
-    public DayStatCreator(SensorRepository sensorRepository, Sensor sensor, int currentDay, List<List<Integer>> values) {
-        this.sensorRepository = sensorRepository;
+    public DayStatCreator(Sensor sensor, int currentDay, List<List<Integer>> values) {
         this.sensor = sensor;
         this.values = values;
         this.currentDay = currentDay;
@@ -50,7 +47,26 @@ public class DayStatCreator {
         return dayStat;
     }
 
-    private int computeConsumption() {
-        
+    private int computeConsumption() throws Exception {
+        if (values == null || values.size() == 0)
+            throw new Exception("No values for this day");
+
+        int oldTimestamp = values.get(0).get(0);
+        int total = values.get(0).get(1);
+
+        for (int i = 1; i < values.size(); i++) {
+            List<Integer> pair = values.get(i);
+            int value = pair.get(1);
+            int timestamp = pair.get(0);
+
+            if (timestamp - oldTimestamp != 60)
+                throw new Exception("Missing data for this day");
+
+            total += value;
+
+            oldTimestamp = timestamp;
+        }
+
+        return total;
     }
 }

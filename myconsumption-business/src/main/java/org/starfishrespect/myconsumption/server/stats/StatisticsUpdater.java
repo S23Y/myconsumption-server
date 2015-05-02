@@ -113,7 +113,7 @@ public class StatisticsUpdater {
             e.printStackTrace();
         }
         Sensor sensor = mSensorRepository.getSensor(id);
-        DayStatCreator creator = new DayStatCreator(mSensorRepository, sensor, currentDay, values);
+        DayStatCreator creator = new DayStatCreator(sensor, currentDay, values);
         DayStat dayStat = null;
         try {
             dayStat = creator.createStat();
