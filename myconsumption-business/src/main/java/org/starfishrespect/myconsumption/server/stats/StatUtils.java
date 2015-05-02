@@ -160,7 +160,18 @@ public class StatUtils {
         return date.getTime();
     }
 
-    public static boolean isDuringDay(int timestamp) {
+    public static Calendar timestamp2Calendar(long timestamp){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp * 1000);
+        return calendar;
+    }
+
+    public static boolean isDuringDayWeek(int timestamp) {
+        Calendar date = timestamp2Calendar(timestamp);
+
+        if (date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            return false;
+
         return (timestamp2Date(timestamp).getTime() >= getCalendar(DAY_START_AT).getTimeInMillis()
                 &&
                 timestamp2Date(timestamp).getTime() < getCalendar(NIGHT_START_AT).getTimeInMillis());

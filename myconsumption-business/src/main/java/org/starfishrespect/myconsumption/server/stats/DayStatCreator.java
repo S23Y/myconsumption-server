@@ -65,7 +65,7 @@ public class DayStatCreator {
             if (timestamp - oldTimestamp != 60)
                 throw new Exception("Missing data for this day");
 
-            if (StatUtils.isDuringDay(timestamp))
+            if (StatUtils.isDuringDayWeek(timestamp))
                 consoDayTemp += value;
             else
                 consoNightTemp += value;

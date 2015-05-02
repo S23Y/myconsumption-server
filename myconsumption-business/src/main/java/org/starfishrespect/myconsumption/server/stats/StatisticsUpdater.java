@@ -126,7 +126,7 @@ public class StatisticsUpdater {
 
         if (dayStat != null)
             System.out.println(dayStat.getDay() + "  consumption: " + dayStat.getConsumption());
-
+        // todo arrivé ici
 
     }
 
