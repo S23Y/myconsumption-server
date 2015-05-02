@@ -11,6 +11,8 @@ import java.util.GregorianCalendar;
  * Created by thibaud on 26.04.15.
  */
 public class StatUtils {
+    private static final int DAY_START_AT = 7;
+    private static final int NIGHT_START_AT = 22;
 
     private static Date sDateAtMidnight;
 
@@ -156,5 +158,11 @@ public class StatUtils {
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
         return date.getTime();
+    }
+
+    public static boolean isDuringDay(int timestamp) {
+        return (timestamp2Date(timestamp).getTime() >= getCalendar(DAY_START_AT).getTimeInMillis()
+                &&
+                timestamp2Date(timestamp).getTime() < getCalendar(NIGHT_START_AT).getTimeInMillis());
     }
 }

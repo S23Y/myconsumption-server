@@ -1,5 +1,7 @@
 package org.starfishrespect.myconsumption.server.stats;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
@@ -25,6 +27,8 @@ public class StatisticsUpdater {
     private StatRepository mStatRepository;
     @Autowired
     private DayStatRepository mDayStatRepository;
+
+    private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
     public StatisticsUpdater(SensorRepository seRepo, StatRepository stRepo, DayStatRepository dStRepo) {
         this.mSensorRepository = seRepo;
@@ -109,8 +113,7 @@ public class StatisticsUpdater {
         try {
             values = mSensorRepository.getValues(id, currentDay, currentDay + 60*60*24);
         } catch (DaoException e) {
-            System.out.println("No values found for day: " + new Date(currentDay));
-            e.printStackTrace();
+            mLogger.debug("No values found for day: " + StatUtils.timestamp2Date(currentDay));
         }
         Sensor sensor = mSensorRepository.getSensor(id);
         DayStatCreator creator = new DayStatCreator(sensor, currentDay, values);
@@ -118,7 +121,7 @@ public class StatisticsUpdater {
         try {
             dayStat = creator.createStat();
         } catch (Exception e) {
-            e.printStackTrace();
+            mLogger.debug(e.toString());
         }
 
         if (dayStat != null)

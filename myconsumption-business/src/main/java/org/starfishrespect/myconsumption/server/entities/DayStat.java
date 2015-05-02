@@ -21,7 +21,7 @@ public class DayStat {
     private Integer minTimestamp;
     private Integer minValue;
     private Integer average;
-    private Integer consumption;
+    //private Integer consumption;
     private Integer consumptionDay;
     private Integer consumptionNight;
     private Integer diffLastTwo;
@@ -83,11 +83,7 @@ public class DayStat {
     }
 
     public Integer getConsumption() {
-        return consumption;
-    }
-
-    public void setConsumption(Integer consumption) {
-        this.consumption = consumption;
+        return consumptionDay + consumptionNight;
     }
 
     public Integer getConsumptionDay() {

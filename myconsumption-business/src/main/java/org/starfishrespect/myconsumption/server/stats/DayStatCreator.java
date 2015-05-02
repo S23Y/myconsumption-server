@@ -1,13 +1,11 @@
 package org.starfishrespect.myconsumption.server.stats;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.LoggerFactory;
 import org.starfishrespect.myconsumption.server.entities.DayStat;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
-import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 
 import java.util.Date;
 import java.util.List;
-
 /**
  * Created by thibaud on 01.05.15.
  */
@@ -15,6 +13,10 @@ public class DayStatCreator {
     private final Sensor sensor;
     private final List<List<Integer>> values;
     private final int currentDay;
+    private int consoNight = 0;
+    private int consoDay = 0;
+
+    private final org.slf4j.Logger mLogger = LoggerFactory.getLogger(DayStatCreator.class);
 
     public DayStatCreator(Sensor sensor, int currentDay, List<List<Integer>> values) {
         this.sensor = sensor;
@@ -29,37 +31,31 @@ public class DayStatCreator {
         DayStat dayStat = new DayStat(sensor.getId(), StatUtils.timestamp2Date(currentDay));
 
         // Compute and set data for stats
-        System.out.println("\n\n" + new Date(currentDay) + " sensor: " + sensor.getName());
+        mLogger.debug("\n\n" + StatUtils.timestamp2Date(currentDay) + " sensor: " + sensor.getName());
 
-        int consoTot = computeConsumption();
-        dayStat.setConsumption(consoTot);
-//        int consoDay = computeConsumptionDay();
-//        dayStat.setConsumptionDay(consoDay);
-//        dayStat.setConsumptionNight(consoTot - consoDay);
-//        dayStat.setAverage(computeAverage(values));
-//        dayStat.setMinValue(computeMin());
-//        dayStat.setMinTimestamp(computeMinTimestamp());
-//        dayStat.setMaxValue(computeMax());
-//        dayStat.setMaxTimestamp(computeMaxTimestamp());
-
-        // todo somewhere else dayStat.setDiffLastTwo(computeDiff());
+        computeConsumption();
+        dayStat.setConsumptionDay(consoDay);
+        dayStat.setConsumptionNight(consoNight);
+        dayStat.setAverage(computeAverage());
+        dayStat.setMinValue(computeMin());
+        dayStat.setMinTimestamp(computeMinTimestamp());
+        dayStat.setMaxValue(computeMax());
+        dayStat.setMaxTimestamp(computeMaxTimestamp());
 
         return dayStat;
     }
 
     /**
-     * Find the total consumption over the values of a day (in Wh / day)
-     *
-     * @return if all values are present with 60 seconds intervals, returns the total consumption over
-     * the values of a day (in Wh). Otherwise, returns an exception.
+     * Set the total consumption (for night and for day) over the values of a day (in Wh / day)
      * @throws Exception
      */
-    private int computeConsumption() throws Exception {
+    private void computeConsumption() throws Exception {
         if (values == null || values.size() <= 1)
             throw new Exception("Not enough values for this day");
 
         int oldTimestamp = values.get(0).get(0);
-        int total = values.get(0).get(1);
+        int consoNightTemp = values.get(0).get(1);
+        int consoDayTemp = 0;
 
         for (int i = 1; i < values.size(); i++) {
             List<Integer> pair = values.get(i);
@@ -69,7 +65,10 @@ public class DayStatCreator {
             if (timestamp - oldTimestamp != 60)
                 throw new Exception("Missing data for this day");
 
-            total += value;
+            if (StatUtils.isDuringDay(timestamp))
+                consoDayTemp += value;
+            else
+                consoNightTemp += value;
 
             oldTimestamp = timestamp;
         }
@@ -80,7 +79,8 @@ public class DayStatCreator {
         // But summing these values does not mean a lot. We need an energy (Wh) which is the TOTAL amount of
         // electricity used or produced over a period of time.
         // For a day, it means we have to divide by 60 (numbers of values taken in one hour)
-        return total / 60;
+        consoNight = consoNightTemp / 60;
+        consoDay = consoDayTemp / 60;
     }
 
     /**
