@@ -94,6 +94,7 @@ public class StatisticsUpdater {
             currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
         }
 
+        // if the current day in db has already been processed, return
         if (!(firstDay.getTime() < lastDay.getTime()))
             return;
 
