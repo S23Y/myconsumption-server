@@ -13,7 +13,6 @@ import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -102,21 +101,28 @@ public class StatisticsUpdater {
         DayStat newDay = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.timestamp2Date(currentDay)).get(0);
 
         // Recompute the stats for each period
-        updatePeriodStat(id, newDay, Period.DAY);
-        updatePeriodStat(id, newDay, Period.WEEK);
-        updatePeriodStat(id, newDay, Period.MONTH);
-        updatePeriodStat(id, newDay, Period.YEAR);
-        updatePeriodStat(id, newDay, Period.ALLTIME);
+        updateOrCreatePeriodStat(id, newDay, Period.DAY);
+        updateOrCreatePeriodStat(id, newDay, Period.WEEK);
+        updateOrCreatePeriodStat(id, newDay, Period.MONTH);
+        updateOrCreatePeriodStat(id, newDay, Period.YEAR);
+        updateOrCreatePeriodStat(id, newDay, Period.ALLTIME);
     }
 
-    private void updatePeriodStat(String id, DayStat dayStat, Period period) {
+    private void updateOrCreatePeriodStat(String id, DayStat dayStat, Period period) {
         PeriodStat periodStat = mStatRepository.findBySensorIdAndPeriod(id, period).get(0);
-        periodStat.removeFirstDay();
+
+        if (periodStat == null)
+            periodStat = new PeriodStat(id, period);
+        else
+            removeExistingStats(id, period); // Remove stats for this sensor
+
+        // Update period stat
+        if (periodStat.getNumberOfDaysInPeriod() == StatUtils.getNumberOfDaysInPeriod(period))
+            periodStat.removeFirstDay();
+
         periodStat.addDayInList(dayStat);
         periodStat.recompute();
 
-        // Remove stats for this sensor
-        removeExistingStats(id, period);
         mStatRepository.save(periodStat);
     }
 

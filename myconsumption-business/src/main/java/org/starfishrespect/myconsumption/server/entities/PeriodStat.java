@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,18 +32,16 @@ public class PeriodStat {
     public PeriodStat(String sensorId, Period period) {
         this.sensorId = sensorId;
         this.period = period;
+        daysInPeriod = new ArrayList<>();
     }
 
     public boolean addDayInList(DayStat day) {
-        // if last day in list is comes after the day we want to insert
-        if (daysInPeriod.get(daysInPeriod.size() - 1).getDay().getTime() > day.getDay().getTime())
-            return false;
-        else
-            return daysInPeriod.add(day);
+        return daysInPeriod.add(day);
     }
 
     public void removeFirstDay() {
-        daysInPeriod.remove(0);
+        if (daysInPeriod.size() > 0)
+            daysInPeriod.remove(0);
     }
 
     public void recompute() {
