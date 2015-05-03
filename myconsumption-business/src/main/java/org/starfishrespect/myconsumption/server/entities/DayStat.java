@@ -24,7 +24,6 @@ public class DayStat {
     //private Integer consumption;
     private Integer consumptionDay;
     private Integer consumptionNight;
-    private Integer diffLastTwo;
 
     public DayStat() {
     }
@@ -100,13 +99,5 @@ public class DayStat {
 
     public void setConsumptionNight(Integer consumptionNight) {
         this.consumptionNight = consumptionNight;
-    }
-
-    public Integer getDiffLastTwo() {
-        return diffLastTwo;
-    }
-
-    public void setDiffLastTwo(Integer diffLastTwo) {
-        this.diffLastTwo = diffLastTwo;
     }
 }
