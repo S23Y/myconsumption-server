@@ -101,48 +101,11 @@ public class StatisticsUpdater {
         DayStat newDay = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.timestamp2Date(currentDay)).get(0);
 
         // Recompute the stats for each period
-        // DAY
-        // Create and save the period stat
         updatePeriodStat(id, newDay, Period.DAY);
-
-        // WEEK
-        // get start of this week
-        Calendar cal = StatUtils.date2Calendar(lastDay);
-        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
-        cal.clear(Calendar.MINUTE);
-        cal.clear(Calendar.SECOND);
-        cal.clear(Calendar.MILLISECOND);
-        cal.setFirstDayOfWeek(Calendar.MONDAY);
-        // get start of this week
-        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-        Date last = cal.getTime();
-        // get start of previous week
-        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-
-        // Remove stats for this sensor
-        removeExistingStats(id, Period.WEEK);
-        // Create and save the period stat
-        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
-        mStatRepository.save(updatePeriodStat(id, cal.getTime(), last, Period.WEEK));
-
-        // MONTH
-        // todo idem
-        cal.set(Calendar.DAY_OF_MONTH, StatUtils.date2Calendar(lastDay).getActualMinimum(Calendar.DAY_OF_MONTH));
-        // Remove stats for this sensor
-        removeExistingStats(id, Period.MONTH);
-        // Create and save the period stat
-        mStatRepository.save(updatePeriodStat(id, cal.getTime(), lastDay, Period.MONTH));
-
-        // YEAR
-        // Remove stats for this sensor
-        removeExistingStats(id, Period.YEAR);
-        mStatRepository.save(year);
-        // ALLTIME
-        // Remove stats for this sensor
-        removeExistingStats(id, Period.ALLTIME);
-        mStatRepository.save(alltime);
-
-
+        updatePeriodStat(id, newDay, Period.WEEK);
+        updatePeriodStat(id, newDay, Period.MONTH);
+        updatePeriodStat(id, newDay, Period.YEAR);
+        updatePeriodStat(id, newDay, Period.ALLTIME);
     }
 
     private void updatePeriodStat(String id, DayStat dayStat, Period period) {
