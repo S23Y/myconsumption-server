@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.entities.DayStat;
+import org.starfishrespect.myconsumption.server.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
-import org.starfishrespect.myconsumption.server.entities.Stat;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -88,10 +89,66 @@ public class StatisticsUpdater {
         // Compute the stat for each day starting at first day
         int currentDay = StatUtils.date2TimeStamp(firstDay);
 
-        while (currentDay < StatUtils.date2TimeStamp(lastDay)) {
+        while (currentDay <= StatUtils.date2TimeStamp(lastDay)) {
             computeStatForDay(id, currentDay);
             currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
         }
+
+
+        // Compute the stats for each period
+        // DAY
+        // Remove stats for this sensor
+        removeExistingStats(id, Period.DAY);
+        // Create and save the period stat
+        mStatRepository.save(createPeriodStat(id, lastDay, lastDay, Period.DAY));
+
+        // WEEK
+        // get start of this week
+        // TODO ne fonctonne pas. exemple si on est mardi, il va renvoyer lundi . Or on voudra le lundi d'avant...
+        Calendar cal = StatUtils.date2Calendar(lastDay);
+        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+        cal.clear(Calendar.MINUTE);
+        cal.clear(Calendar.SECOND);
+        cal.clear(Calendar.MILLISECOND);
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        // get start of this week
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+
+        // Remove stats for this sensor
+        removeExistingStats(id, Period.WEEK);
+        // Create and save the period stat
+        mStatRepository.save(createPeriodStat(id, cal.getTime(), lastDay, Period.WEEK));
+
+        // MONTH
+        // todo idem
+        cal.set(Calendar.DAY_OF_MONTH, StatUtils.date2Calendar(lastDay).getActualMinimum(Calendar.DAY_OF_MONTH));
+        // Remove stats for this sensor
+        removeExistingStats(id, Period.MONTH);
+        // Create and save the period stat
+        mStatRepository.save(createPeriodStat(id, cal.getTime(), lastDay, Period.MONTH));
+
+        // YEAR
+        // Remove stats for this sensor
+        removeExistingStats(id, Period.YEAR);
+        mStatRepository.save(year);
+        // ALLTIME
+        // Remove stats for this sensor
+        removeExistingStats(id, Period.ALLTIME);
+        mStatRepository.save(alltime);
+
+
+    }
+
+    private PeriodStat createPeriodStat(String sensorId, Date firstDay, Date lastDay, Period period) {
+        PeriodStat periodStat = new PeriodStat(sensorId, period);
+        int currentDay = StatUtils.date2TimeStamp(firstDay);
+        while (currentDay <= StatUtils.date2TimeStamp(lastDay)) {
+            periodStat.addDayInList(mDayStatRepository.findBySensorIdAndDay(sensorId, StatUtils.timestamp2Date(currentDay)).get(0));
+            currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
+        }
+        periodStat.recompute();
+
+        return periodStat;
     }
 
     /**
@@ -127,7 +184,7 @@ public class StatisticsUpdater {
     }
 
     /**
-     * Remove stats in database corresponding to a given sensor id and period
+     * Remove DayStats in database corresponding to a given sensor id and date
      *
      * @param sensorId the sensor id
      * @param d        the date of the day
@@ -137,5 +194,18 @@ public class StatisticsUpdater {
 
         for (DayStat dayStat : dayStats)
             mDayStatRepository.delete(dayStat);
+    }
+
+    /**
+     * Remove PeriodStat in database corresponding to a given sensor id and period
+     *
+     * @param sensorId the sensor id
+     * @param p       a Period
+     */
+    private void removeExistingStats(String sensorId, Period p) {
+        List<PeriodStat> stats = mStatRepository.findBySensorIdAndPeriod(sensorId, p);
+
+        for (PeriodStat stat : stats)
+            mStatRepository.delete(stat);
     }
 }

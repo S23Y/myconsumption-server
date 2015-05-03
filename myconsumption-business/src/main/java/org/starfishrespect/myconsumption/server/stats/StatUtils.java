@@ -176,4 +176,14 @@ public class StatUtils {
                 &&
                 timestamp2Date(timestamp).getTime() < getCalendar(NIGHT_START_AT).getTimeInMillis());
     }
+
+    public static Calendar date2Calendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
+
+    public static int calendar2TimeStamp(Calendar cal) {
+        return (int) (cal.getTimeInMillis()/1000L);
+    }
 }

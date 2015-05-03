@@ -52,9 +52,6 @@ public class Watcher implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-
-        StatUtils.isDuringDayWeek(1430592518);
-
         retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
         statUpdater = new StatisticsUpdater(sensorRepository, statRepository, dayStatRepository);
 
