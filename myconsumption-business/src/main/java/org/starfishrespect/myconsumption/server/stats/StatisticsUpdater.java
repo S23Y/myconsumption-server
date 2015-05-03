@@ -74,7 +74,7 @@ public class StatisticsUpdater {
         // Start by getting all stats sorted
         List<DayStat> dayStats = mDayStatRepository.findAll(new Sort(Sort.Direction.DESC, "day"));
 
-        Date firstDay = null;
+        Date firstDay;
 
         // If nothing has been found, the first day will be the first value of the sensor
         if (dayStats == null || dayStats.size() == 0) {
@@ -92,22 +92,13 @@ public class StatisticsUpdater {
             computeStatForDay(id, currentDay);
             currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
         }
-
-
-//        for (Period p : Period.values()) {
-//            List<List<Integer>> values = mSensorRepository.getValues(id, StatUtils.getStartTime(p), StatUtils.date2TimeStamp(lastDay)));
-//            List<List<Integer>> oldValues = mSensorRepository.getValues(id, StatUtils.getStartTime(p, 2), StatUtils.getStartTime(p));
-//            Sensor sensor = mSensorRepository.getSensor(id);
-//
-//            StatCreator creator = new StatCreator(mSensorRepository, sensor, p, values, oldValues);
-//            Stat stat = creator.createStat();
-//
-//            // Remove corresponding stat from db and insert new one
-//            removeExistingStats(id, p);
-//            mStatRepository.save(stat);
-//        }
     }
 
+    /**
+     * Compute stat for a sensor and a given day.
+     * @param id the String id of the sensor
+     * @param currentDay the current day as an epoch timestamp (in seconds)
+     */
     private void computeStatForDay(String id, int currentDay) {
         List<List<Integer>> values;
         try {
