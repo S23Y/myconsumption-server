@@ -109,37 +109,42 @@ public class StatisticsUpdater {
     }
 
     private void computeStatForDay(String id, int currentDay) {
-        List<List<Integer>> values = null;
+        List<List<Integer>> values;
         try {
             values = mSensorRepository.getValues(id, currentDay, currentDay + 60*60*24);
         } catch (DaoException e) {
             mLogger.debug("No values found for day: " + StatUtils.timestamp2Date(currentDay));
+            return;
         }
         Sensor sensor = mSensorRepository.getSensor(id);
         DayStatCreator creator = new DayStatCreator(sensor, currentDay, values);
-        DayStat dayStat = null;
+        DayStat dayStat;
         try {
             dayStat = creator.createStat();
         } catch (Exception e) {
             mLogger.debug(e.toString());
+            return;
         }
 
-        if (dayStat != null)
-            System.out.println(dayStat.getDay() + "  consumption: " + dayStat.getConsumption());
-        // todo arrivé ici
+        if (dayStat == null) {
+            mLogger.debug("DayStat null");
+            return;
+        }
 
+        removeExistingDayStats(id, StatUtils.timestamp2Date(currentDay));
+        mDayStatRepository.save(dayStat);
     }
 
     /**
      * Remove stats in database corresponding to a given sensor id and period
      *
      * @param sensorId the sensor id
-     * @param p        the period
+     * @param d        the date of the day
      */
-    private void removeExistingStats(String sensorId, Period p) {
-        List<Stat> stats = mStatRepository.findBySensorIdAndPeriod(sensorId, p);
+    private void removeExistingDayStats(String sensorId, Date d) {
+        List<DayStat> dayStats = mDayStatRepository.findBySensorIdAndDay(sensorId, d);
 
-        for (Stat stat : stats)
-            mStatRepository.delete(stat);
+        for (DayStat dayStat : dayStats)
+            mDayStatRepository.delete(dayStat);
     }
 }
