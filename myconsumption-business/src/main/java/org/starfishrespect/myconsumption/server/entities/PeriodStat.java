@@ -41,8 +41,8 @@ public class PeriodStat {
             return daysInPeriod.add(day);
     }
 
-    public boolean removeDayInList(DayStat day) {
-        return daysInPeriod.remove(day);
+    public void removeFirstDay() {
+        daysInPeriod.remove(0);
     }
 
     public void recompute() {

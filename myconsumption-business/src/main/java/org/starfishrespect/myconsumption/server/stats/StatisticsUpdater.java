@@ -94,17 +94,19 @@ public class StatisticsUpdater {
             currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
         }
 
+        if (!(firstDay.getTime() < lastDay.getTime()))
+            return;
 
-        // Compute the stats for each period
+        // Find the day to add to each period
+        DayStat newDay = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.timestamp2Date(currentDay)).get(0);
+
+        // Recompute the stats for each period
         // DAY
-        // Remove stats for this sensor
-        removeExistingStats(id, Period.DAY);
         // Create and save the period stat
-        mStatRepository.save(createPeriodStat(id, lastDay, lastDay, Period.DAY));
+        updatePeriodStat(id, newDay, Period.DAY);
 
         // WEEK
         // get start of this week
-        // TODO ne fonctonne pas. exemple si on est mardi, il va renvoyer lundi . Or on voudra le lundi d'avant...
         Calendar cal = StatUtils.date2Calendar(lastDay);
         cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
         cal.clear(Calendar.MINUTE);
@@ -113,11 +115,15 @@ public class StatisticsUpdater {
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         // get start of this week
         cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+        Date last = cal.getTime();
+        // get start of previous week
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
 
         // Remove stats for this sensor
         removeExistingStats(id, Period.WEEK);
         // Create and save the period stat
-        mStatRepository.save(createPeriodStat(id, cal.getTime(), lastDay, Period.WEEK));
+        cal.set(Calendar.DAY_OF_WEEK, cal.getFirstDayOfWeek());
+        mStatRepository.save(updatePeriodStat(id, cal.getTime(), last, Period.WEEK));
 
         // MONTH
         // todo idem
@@ -125,7 +131,7 @@ public class StatisticsUpdater {
         // Remove stats for this sensor
         removeExistingStats(id, Period.MONTH);
         // Create and save the period stat
-        mStatRepository.save(createPeriodStat(id, cal.getTime(), lastDay, Period.MONTH));
+        mStatRepository.save(updatePeriodStat(id, cal.getTime(), lastDay, Period.MONTH));
 
         // YEAR
         // Remove stats for this sensor
@@ -139,16 +145,15 @@ public class StatisticsUpdater {
 
     }
 
-    private PeriodStat createPeriodStat(String sensorId, Date firstDay, Date lastDay, Period period) {
-        PeriodStat periodStat = new PeriodStat(sensorId, period);
-        int currentDay = StatUtils.date2TimeStamp(firstDay);
-        while (currentDay <= StatUtils.date2TimeStamp(lastDay)) {
-            periodStat.addDayInList(mDayStatRepository.findBySensorIdAndDay(sensorId, StatUtils.timestamp2Date(currentDay)).get(0));
-            currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
-        }
+    private void updatePeriodStat(String id, DayStat dayStat, Period period) {
+        PeriodStat periodStat = mStatRepository.findBySensorIdAndPeriod(id, period).get(0);
+        periodStat.removeFirstDay();
+        periodStat.addDayInList(dayStat);
         periodStat.recompute();
 
-        return periodStat;
+        // Remove stats for this sensor
+        removeExistingStats(id, period);
+        mStatRepository.save(periodStat);
     }
 
     /**
