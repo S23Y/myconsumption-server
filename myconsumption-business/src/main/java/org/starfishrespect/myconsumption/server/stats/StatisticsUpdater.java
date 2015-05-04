@@ -117,8 +117,7 @@ public class StatisticsUpdater {
             removeExistingStats(id, period); // Remove stats for this sensor
 
         // Update period stat
-        if (periodStat.getNumberOfDaysInPeriod() == StatUtils.getNumberOfDaysInPeriod(period))
-            periodStat.removeFirstDay();
+        periodStat.removeFirstDay();
 
         periodStat.addDayInList(dayStat);
         periodStat.recompute();

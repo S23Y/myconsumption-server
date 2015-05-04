@@ -3,6 +3,7 @@ package org.starfishrespect.myconsumption.server.entities;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
+import org.starfishrespect.myconsumption.server.stats.StatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +50,21 @@ public class PeriodStat {
     }
 
     public void removeFirstDay() {
-        if (daysInPeriod.size() > 0)
-            daysInPeriod.remove(0);
+        if (daysInPeriod.size() == 0)
+            return;
+        if (this.daysInPeriod.size() != StatUtils.getNumberOfDaysInPeriod(period))
+            return;
+
+        DayStat removed = daysInPeriod.remove(0);
+
+        // add this to the other
+        daysInPreviousPeriod.add(removed);
+
+        if (this.daysInPreviousPeriod.size() != StatUtils.getNumberOfDaysInPeriod(period))
+            return;
+
+        daysInPreviousPeriod.remove(0);
+
     }
 
     public void recompute() {
@@ -72,7 +86,15 @@ public class PeriodStat {
             }
         }
 
-        average = average / getNumberOfDaysInPeriod();
+        average = average / daysInPeriod.size();
+
+        int oldConso = 0;
+
+        for (DayStat oldDay : daysInPreviousPeriod) {
+            oldConso += oldDay.getConsumption();
+        }
+
+        diffLastTwo = this.getConsumption() - oldConso;
     }
 
     private void reset() {
@@ -84,10 +106,6 @@ public class PeriodStat {
         consumptionDay = 0;
         consumptionNight = 0;
         diffLastTwo = 0;
-    }
-
-    public int getNumberOfDaysInPeriod() {
-       return daysInPeriod.size();
     }
 
     public int getConsumption() {
