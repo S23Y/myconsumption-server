@@ -18,7 +18,16 @@ public class PeriodStat {
     @Indexed
     private Period period;
 
+    /**
+     * Represent the days stat of this period
+     */
     private List<DayStat> daysInPeriod;
+    /**
+     * Represent the days stat of the period previous to the one represented by this object.
+     * It is needed to compute the diff between the consumption of the period represented by
+     * this object and the consumption of the previous period.
+     */
+    private List<DayStat> daysInPreviousPeriod;
 
     private Integer maxTimestamp;
     private Integer maxValue;
