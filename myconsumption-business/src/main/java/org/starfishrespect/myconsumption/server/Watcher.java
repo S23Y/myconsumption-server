@@ -4,20 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.domain.Sort;
 import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
-import org.starfishrespect.myconsumption.server.business.sensors.SensorData;
-import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.entities.Stat;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.StatRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
-import org.starfishrespect.myconsumption.server.stats.StatUtils;
 import org.starfishrespect.myconsumption.server.stats.StatisticsUpdater;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
