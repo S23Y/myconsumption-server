@@ -145,13 +145,14 @@ public class StatUtils {
     }
 
     /**
-     * Get today's date at midnight.
-     * For example, if we are on Thursday 9th April at 11:00 PM, it will return Thursday 9th April at 00:00 AM
+     * Set the given date at midnight.
+     * For example, if we have Thursday 9th April at 11:00 PM, it will return Thursday 9th April at 00:00 AM
+     * @param d a Date
      * @return today's Date at midnight
      */
-    public static Date getDateAtMidnight() {
+    public static Date getDateAtMidnight(Date d) {
         // today
-        Calendar date = new GregorianCalendar();
+        Calendar date = date2Calendar(d);
         // reset hour, minutes, seconds and millis
         date.set(Calendar.HOUR_OF_DAY, 0);
         date.set(Calendar.MINUTE, 0);

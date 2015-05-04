@@ -48,7 +48,7 @@ public class StatisticsUpdater {
             System.out.println("Compute stats for sensor " + sensor.getId());
 
             try {
-                computeStatsForSensor(sensor.getId(), StatUtils.getDateAtMidnight());
+                computeStatsForSensor(sensor.getId(), StatUtils.getDateAtMidnight(new Date()));
             } catch (Exception e) {
                 System.out.println("Error while computing stats for this sensor...");
                 e.printStackTrace();
@@ -74,21 +74,23 @@ public class StatisticsUpdater {
         // Start by getting all stats sorted
         List<DayStat> dayStats = mDayStatRepository.findAll(new Sort(Sort.Direction.DESC, "day"));
 
-        Date firstDay;
+        Date dayDb;
 
         // If nothing has been found, the first day will be the first value of the sensor
         if (dayStats == null || dayStats.size() == 0) {
-            firstDay = mSensorRepository.getSensor(id).getFirstValue();
+            dayDb = mSensorRepository.getSensor(id).getFirstValue();
         } else {
             // else the first day will be the latest day found in db
-            DayStat lastDayStat = dayStats.get(dayStats.size() - 1);
-            firstDay = lastDayStat.getDay();
+            DayStat lastDayStat = dayStats.get(0);
+            dayDb = lastDayStat.getDay();
         }
+
+        Date firstDay = StatUtils.getDateAtMidnight(dayDb);
 
         // Compute the stat for each day starting at first day
         int currentDay = StatUtils.date2TimeStamp(firstDay);
 
-        while (currentDay <= StatUtils.date2TimeStamp(lastDay)) {
+        while (currentDay < StatUtils.date2TimeStamp(lastDay)) {
             computeStatForDay(id, currentDay);
             currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
         }
@@ -97,15 +99,43 @@ public class StatisticsUpdater {
         if (!(firstDay.getTime() < lastDay.getTime()))
             return;
 
-        // Find the day to add to each period
-        DayStat newDay = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.timestamp2Date(currentDay)).get(0);
+        // Update each period
+        updatePeriod(id, firstDay, lastDay);
 
-        // Recompute the stats for each period
-        updateOrCreatePeriodStat(id, newDay, Period.DAY);
-        updateOrCreatePeriodStat(id, newDay, Period.WEEK);
-        updateOrCreatePeriodStat(id, newDay, Period.MONTH);
-        updateOrCreatePeriodStat(id, newDay, Period.YEAR);
-        updateOrCreatePeriodStat(id, newDay, Period.ALLTIME);
+    }
+
+    private void updatePeriod(String id, Date firstDay, Date lastDay) {
+        int currentDay = StatUtils.date2TimeStamp(firstDay);
+
+        while (currentDay < StatUtils.date2TimeStamp(lastDay)) {
+            boolean update = true;
+
+            // Find the day to add to each period
+            List<DayStat> days = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.getDateAtMidnight(StatUtils.timestamp2Date(currentDay)));
+
+            if (days == null)
+                update = false;
+
+            DayStat newDay = null;
+
+            if (update)
+                newDay = days.get(0);
+
+            if (newDay == null)
+                update = false;
+
+            if (update) {
+                // Recompute the stats for each period
+                updateOrCreatePeriodStat(id, newDay, Period.DAY);
+                updateOrCreatePeriodStat(id, newDay, Period.WEEK);
+                updateOrCreatePeriodStat(id, newDay, Period.MONTH);
+                updateOrCreatePeriodStat(id, newDay, Period.YEAR);
+                updateOrCreatePeriodStat(id, newDay, Period.ALLTIME);
+            }
+
+            currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
+        }
+
     }
 
     private void updateOrCreatePeriodStat(String id, DayStat dayStat, Period period) {
