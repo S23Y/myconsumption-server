@@ -29,8 +29,16 @@ public class StatDTO implements Serializable {
         return sensorId;
     }
 
+    public void setSensorId(String sensorId) {
+        this.sensorId = sensorId;
+    }
+
     public Period getPeriod() {
         return period;
+    }
+
+    public void setPeriod(Period period) {
+        this.period = period;
     }
 
     public Integer getMaxTimestamp() {

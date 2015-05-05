@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.StatDTO;
 import org.starfishrespect.myconsumption.server.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
+import org.starfishrespect.myconsumption.server.stats.StatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +24,18 @@ public class StatController {
 
     @RequestMapping(value = "/sensor/{sensorId}", method = RequestMethod.GET)
     public List<StatDTO> getAllStats(@PathVariable String sensorId) {
-        List<PeriodStat> periods = mPeriodStatRepository.findBySensorId(sensorId);
+        List<PeriodStat> periodStats = mPeriodStatRepository.findBySensorId(sensorId);
         List<StatDTO> stats = new ArrayList<>();
 
         Mapper mapper = new DozerBeanMapper();
 
-        for (PeriodStat period : periods) {
-            stats.add(mapper.map(period, StatDTO.class));
+        for (PeriodStat periodStat : periodStats) {
+            // If the period stat is complete (= all the days are present)
+            if (periodStat.getDaysInPeriod().size() == StatUtils.getNumberOfDaysInPeriod(periodStat.getPeriod()) {
+                stats.add(mapper.map(periodStat, StatDTO.class));
+            }
         }
+
         return stats;
     }
 }
