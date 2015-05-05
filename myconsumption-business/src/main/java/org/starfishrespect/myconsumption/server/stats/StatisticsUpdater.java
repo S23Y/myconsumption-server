@@ -3,7 +3,6 @@ package org.starfishrespect.myconsumption.server.stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.entities.DayStat;
 import org.starfishrespect.myconsumption.server.entities.PeriodStat;
@@ -11,7 +10,7 @@ import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
-import org.starfishrespect.myconsumption.server.repositories.StatRepository;
+import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -26,15 +25,15 @@ public class StatisticsUpdater {
     @Autowired
     private SensorRepository mSensorRepository;
     @Autowired
-    private StatRepository mStatRepository;
+    private PeriodStatRepository mPeriodStatRepository;
     @Autowired
     private DayStatRepository mDayStatRepository;
 
     private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
-    public StatisticsUpdater(SensorRepository seRepo, StatRepository stRepo, DayStatRepository dStRepo) {
+    public StatisticsUpdater(SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo) {
         this.mSensorRepository = seRepo;
-        this.mStatRepository = stRepo;
+        this.mPeriodStatRepository = stRepo;
         this.mDayStatRepository = dStRepo;
     }
 
@@ -157,7 +156,7 @@ public class StatisticsUpdater {
     }
 
     private void updateOrCreatePeriodStat(String id, DayStat dayStat, Period period) {
-        List<PeriodStat> periodStats = mStatRepository.findBySensorIdAndPeriod(id, period);
+        List<PeriodStat> periodStats = mPeriodStatRepository.findBySensorIdAndPeriod(id, period);
         PeriodStat periodStat = null;
 
         if (periodStats == null || periodStats.size() == 0)
@@ -171,7 +170,7 @@ public class StatisticsUpdater {
         periodStat.addDayInList(dayStat);
         periodStat.recompute();
 
-        mStatRepository.save(periodStat);
+        mPeriodStatRepository.save(periodStat);
     }
 
     /**
@@ -226,9 +225,9 @@ public class StatisticsUpdater {
      * @param p       a Period
      */
     private void removeExistingStats(String sensorId, Period p) {
-        List<PeriodStat> stats = mStatRepository.findBySensorIdAndPeriod(sensorId, p);
+        List<PeriodStat> stats = mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, p);
 
         for (PeriodStat stat : stats)
-            mStatRepository.delete(stat);
+            mPeriodStatRepository.delete(stat);
     }
 }

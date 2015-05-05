@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
-import org.starfishrespect.myconsumption.server.repositories.StatRepository;
+import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 import org.starfishrespect.myconsumption.server.stats.StatisticsUpdater;
 
@@ -30,7 +30,7 @@ public class Watcher implements CommandLineRunner {
     @Autowired
     private ValuesRepository valuesRepository;
     @Autowired
-    private StatRepository statRepository;
+    private PeriodStatRepository mPeriodStatRepository;
     @Autowired
     private DayStatRepository dayStatRepository;
 
@@ -47,7 +47,7 @@ public class Watcher implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
-        statUpdater = new StatisticsUpdater(sensorRepository, statRepository, dayStatRepository);
+        statUpdater = new StatisticsUpdater(sensorRepository, mPeriodStatRepository, dayStatRepository);
 
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by thibaud on 16.03.15.
  */
-public interface StatRepository extends MongoRepository<PeriodStat, String>  {
+public interface PeriodStatRepository extends MongoRepository<PeriodStat, String>  {
     List<PeriodStat> findBySensorId(String sensorId);
     List<PeriodStat> findBySensorIdAndPeriod(String sensorId, Period p);
 }
