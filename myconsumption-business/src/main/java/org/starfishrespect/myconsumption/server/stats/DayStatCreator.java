@@ -28,7 +28,7 @@ public class DayStatCreator {
         if (sensor == null || values == null)
             throw new Exception("Cannot create stat for day " + new Date(currentDay));
 
-        DayStat dayStat = new DayStat(sensor.getId(), StatUtils.timestamp2Date(currentDay));
+        DayStat dayStat = new DayStat(sensor.getId(), StatUtils.getDateAtMidnight(StatUtils.timestamp2Date(currentDay)));
 
         // Compute and set data for stats
         mLogger.debug("\n\n" + StatUtils.timestamp2Date(currentDay) + " sensor: " + sensor.getName());
