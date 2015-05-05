@@ -6,6 +6,7 @@ import org.starfishrespect.myconsumption.server.entities.Sensor;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  * Created by thibaud on 26.04.15.
@@ -162,9 +163,12 @@ public class StatUtils {
     }
 
     public static Calendar timestamp2Calendar(long timestamp){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timestamp * 1000);
-        return calendar;
+        Date date = timestamp2Date(timestamp);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("Europe/Brussels"));
+        cal.setTime(date);
+
+        return cal;
     }
 
     public static boolean isDuringDayWeek(int timestamp) {
@@ -173,9 +177,7 @@ public class StatUtils {
         if (date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
             return false;
 
-        return (timestamp2Date(timestamp).getTime() >= getCalendar(DAY_START_AT).getTimeInMillis()
-                &&
-                timestamp2Date(timestamp).getTime() < getCalendar(NIGHT_START_AT).getTimeInMillis());
+        return (date.get(Calendar.HOUR_OF_DAY) >= DAY_START_AT) && (date.get(Calendar.HOUR_OF_DAY) < NIGHT_START_AT);
     }
 
     public static Calendar date2Calendar(Date date) {

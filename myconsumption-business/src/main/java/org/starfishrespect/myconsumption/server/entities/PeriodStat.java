@@ -43,6 +43,7 @@ public class PeriodStat {
         this.sensorId = sensorId;
         this.period = period;
         daysInPeriod = new ArrayList<>();
+        daysInPreviousPeriod = new ArrayList<>();
     }
 
     public boolean addDayInList(DayStat day) {
@@ -52,7 +53,7 @@ public class PeriodStat {
     public void removeFirstDay() {
         if (daysInPeriod.size() == 0)
             return;
-        if (this.daysInPeriod.size() != StatUtils.getNumberOfDaysInPeriod(period))
+        if (this.daysInPeriod.size() < StatUtils.getNumberOfDaysInPeriod(period))
             return;
 
         DayStat removed = daysInPeriod.remove(0);
@@ -60,11 +61,10 @@ public class PeriodStat {
         // add this to the other
         daysInPreviousPeriod.add(removed);
 
-        if (this.daysInPreviousPeriod.size() != StatUtils.getNumberOfDaysInPeriod(period))
+        if (this.daysInPreviousPeriod.size() <= StatUtils.getNumberOfDaysInPeriod(period))
             return;
 
         daysInPreviousPeriod.remove(0);
-
     }
 
     public void recompute() {
