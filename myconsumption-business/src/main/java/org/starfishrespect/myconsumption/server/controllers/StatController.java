@@ -31,7 +31,7 @@ public class StatController {
 
         for (PeriodStat periodStat : periodStats) {
             // If the period stat is complete (= all the days are present)
-            if (periodStat.getDaysInPeriod().size() == StatUtils.getNumberOfDaysInPeriod(periodStat.getPeriod()) {
+            if (periodStat.getDaysInPeriod().size() == StatUtils.getNumberOfDaysInPeriod(periodStat.getPeriod())) {
                 stats.add(mapper.map(periodStat, StatDTO.class));
             }
         }
