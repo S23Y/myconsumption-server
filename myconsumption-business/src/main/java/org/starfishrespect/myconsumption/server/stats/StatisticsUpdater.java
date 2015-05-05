@@ -102,17 +102,16 @@ public class StatisticsUpdater {
             return;
 
         // Update each period
-        updatePeriod(id, lastDay);
+        updatePeriod(id, firstDay.getTime());
 
     }
 
-    private void updatePeriod(String id, Date lastDay) {
+    private void updatePeriod(String id, Date firstDay) {
         List<DayStat> dayStats = mDayStatRepository.findBySensorId(id);
         Collections.sort(dayStats, new DayStatComparator());
 
-
         for(DayStat newDay : dayStats) {
-            if (!(newDay.getDay().getTime() < lastDay.getTime()))
+            if (newDay.getDay().getTime() <= firstDay.getTime())
                 continue;
 
             updateOrCreatePeriodStat(id, newDay, Period.DAY);

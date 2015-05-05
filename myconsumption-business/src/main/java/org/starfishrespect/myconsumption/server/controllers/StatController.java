@@ -4,6 +4,7 @@ import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.api.dto.StatDTO;
 import org.starfishrespect.myconsumption.server.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
@@ -37,5 +38,23 @@ public class StatController {
         }
 
         return stats;
+    }
+
+    @RequestMapping(value = "/sensor/{sensorId}/period/{period}", method = RequestMethod.GET)
+    public List<PeriodStat> getAllStatsByPeriod(@PathVariable String sensorId, @PathVariable String period) {
+        switch (period) {
+            case "ALLTIME":
+                return mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, Period.ALLTIME);
+            case "DAY":
+                return mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, Period.DAY);
+            case "WEEK":
+                return mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, Period.WEEK);
+            case "MONTH":
+                return mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, Period.MONTH);
+            case "YEAR":
+                return mPeriodStatRepository.findBySensorIdAndPeriod(sensorId, Period.YEAR);
+            default:
+                return new ArrayList<>();
+        }
     }
 }

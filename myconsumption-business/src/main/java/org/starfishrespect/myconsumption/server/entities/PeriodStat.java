@@ -58,7 +58,7 @@ public class PeriodStat {
 
         DayStat removed = daysInPeriod.remove(0);
 
-        // add this to the other
+        // add this to the older period list
         daysInPreviousPeriod.add(removed);
 
         if (this.daysInPreviousPeriod.size() <= StatUtils.getNumberOfDaysInPeriod(period))
