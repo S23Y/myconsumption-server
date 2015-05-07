@@ -128,6 +128,10 @@ public class PeriodStat {
         return daysInPeriod;
     }
 
+    public List<DayStat> getDaysInPreviousPeriod() {
+        return daysInPreviousPeriod;
+    }
+
     public Integer getMaxTimestamp() {
         return maxTimestamp;
     }

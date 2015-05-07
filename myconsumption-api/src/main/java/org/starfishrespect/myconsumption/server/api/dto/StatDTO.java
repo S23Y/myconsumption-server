@@ -3,7 +3,6 @@ package org.starfishrespect.myconsumption.server.api.dto;
 import java.io.Serializable;
 
 public class StatDTO implements Serializable {
-
     private String sensorId;
     private Period period;
     private Integer maxTimestamp;
@@ -16,14 +15,7 @@ public class StatDTO implements Serializable {
     private Integer consumption;
     private Integer diffLastTwo;
 
-
-    public StatDTO() {
-    }
-
-    public StatDTO(String s, Period p) {
-        sensorId = s;
-        period = p;
-    }
+    public StatDTO() {}
 
     public String getSensorId() {
         return sensorId;
