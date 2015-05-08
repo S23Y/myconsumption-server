@@ -22,7 +22,7 @@ public class NotifController {
     @Autowired
     private UserRepository mUserRepository;
 
-    @RequestMapping(value = "/user/{name}/id/{registerId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{name}/id/{registerId}", method = RequestMethod.POST)
     public SimpleResponseDTO registerId(@PathVariable String name, @PathVariable String registerId)
             throws DaoException {
 
@@ -31,18 +31,13 @@ public class NotifController {
         if (user == null)
             throw new NotFoundException();
 
-        // verifiier
+        if (registerId == null || registerId.isEmpty())
+            return new SimpleResponseDTO(false, "Register id invalid");
 
-        if (!mSensorRepository.sensorExists(sensorId))
-            throw new NotFoundException();
-
-        if (user.getSensors().contains(sensorId))
-            return new SimpleResponseDTO(false, "you already have this sensor");
-
-        user.getSensors().add(sensorId);
+        // Set or override current id
+        user.setRegisterId(registerId);
         mUserRepository.updateUser(user);
-        mSensorRepository.incrementUsageCount(sensorId);
 
-        return new SimpleResponseDTO(true, "sensor associated to the user");
+        return new SimpleResponseDTO(true, "register id associated to the user");
     }
 }

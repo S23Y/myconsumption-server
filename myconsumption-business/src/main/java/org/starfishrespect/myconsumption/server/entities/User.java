@@ -13,6 +13,7 @@ public class User {
     private String name;
     private String password;
     private List<String> sensors;
+    private String registerId;
 
     public User() {}
 
@@ -26,7 +27,7 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "Customer[id=%s, name='%s', sensors='%s']",
+                "User [id=%s, name='%s', sensors='%s']",
                 id, name, this.printSensors());
     }
 
@@ -40,6 +41,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getRegisterId() {
+        return registerId;
+    }
+
+    public void setRegisterId(String registerId) {
+        this.registerId = registerId;
     }
 
     public List<String> getSensors() {
