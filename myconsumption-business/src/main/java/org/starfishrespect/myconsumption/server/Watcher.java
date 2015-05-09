@@ -5,6 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
+import org.starfishrespect.myconsumption.server.notifications.NotificationMessage;
+import org.starfishrespect.myconsumption.server.notifications.NotificationSender;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
@@ -46,6 +48,14 @@ public class Watcher implements CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
+        NotificationSender sender = new NotificationSender("AIzaSyAXxQHFNI783jfWY1RRu2gotxUKvanys0U");
+        NotificationMessage message = new NotificationMessage.Builder()
+                .timeToLive(24*60*60*7)
+                .delayWhileIdle(true)
+                .addData("message", "this is my message")
+                .build();
+        sender.sendNoRetry(message, "APA91bFUIhjTdJUKAQgVJLpPggtjKkmzSp7XUqWZudg4AW_bFky5yZ2OMf_OH3hrHlPEfega4gQY9V4CkfxkrhLRFAad4fY-LkyOFyCUwOUsbD4Yiy-eZrSCjiBganaDi0L-iAPcdiBsure7yRr2wUhvsQcLrPCKIW_AamD0rXZAUEdFQaZXfV8");
+
         retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
         statUpdater = new StatisticsUpdater(sensorRepository, mPeriodStatRepository, dayStatRepository);
 

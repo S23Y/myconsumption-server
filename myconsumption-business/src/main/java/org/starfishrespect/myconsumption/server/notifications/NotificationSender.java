@@ -44,7 +44,6 @@ public class NotificationSender {
 
     /**
      * Default constructor.
-     *
      * @param key API key obtained through the Google API Console.
      */
     public NotificationSender(String key) {
