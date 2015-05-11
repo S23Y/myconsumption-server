@@ -3,17 +3,21 @@ package org.starfishrespect.myconsumption.server.stats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.entities.DayStat;
 import org.starfishrespect.myconsumption.server.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
+import org.starfishrespect.myconsumption.server.notifications.NotificationMessage;
+import org.starfishrespect.myconsumption.server.notifications.NotificationSender;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -32,6 +36,9 @@ public class StatisticsUpdater {
     private DayStatRepository mDayStatRepository;
     @Autowired
     private UserRepository mUserRepository;
+
+    @Value("${api.key}")
+    private String mApiKey;
 
     private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
@@ -89,10 +96,38 @@ public class StatisticsUpdater {
     }
 
     private void sendNotification(PeriodStat periodStat) {
+
+        if (periodStat.getDiffLastTwo() == 0)
+            return;
+
         String sensorId = periodStat.getSensorId();
+        String sensorName = mSensorRepository.getSensor(sensorId).getName();
 
         // Get the user associated to this sensor id
         List<User> users = mUserRepository.findBySensorId(sensorId);
+
+        String msgNotif;
+
+        if (periodStat.getDiffLastTwo() > 0)
+            msgNotif = "Your daily consumption is increasing for the sensor " + sensorName;
+        else
+            msgNotif = "Your daily consumption is decreasing for the sensor " + sensorName;
+
+        for(User user : users) {
+            NotificationSender sender = new NotificationSender(mApiKey);
+            NotificationMessage message = new NotificationMessage.Builder()
+                    .timeToLive(24*60*60*7) // A week in seconds
+                    .delayWhileIdle(true)
+                    .collapseKey(sensorId)
+                    .addData("message", msgNotif)
+                    .build();
+            try {
+                sender.sendNoRetry(message, user.getRegisterId());
+            } catch (IOException e) {
+                mLogger.error("Notification not sent: " + e.toString());
+            }
+
+        }
     }
 
     /**
