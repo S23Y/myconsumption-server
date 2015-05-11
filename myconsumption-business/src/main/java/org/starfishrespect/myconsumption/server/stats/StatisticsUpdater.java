@@ -67,10 +67,10 @@ public class StatisticsUpdater {
      * Cycle through each period of a given sensor to compute its associated stats.
      *
      * @param id sensor id of the sensor
-     * @param lastDay today's date at midnight
+     * @param today today's date at midnight
      * @throws DaoException thrown if something goes wrong while communicating with the db
      */
-    private void computeStatsForSensor(String id, Date lastDay) throws DaoException {
+    private void computeStatsForSensor(String id, Date today) throws DaoException {
         // Find latest DayStat available in db
         // Start by getting all stats sorted for this sensor id
         List<DayStat> dayStats = mDayStatRepository.findBySensorId(id);
@@ -88,7 +88,7 @@ public class StatisticsUpdater {
         }
 
         Calendar firstDay = StatUtils.date2Calendar(StatUtils.getDateAtMidnight(dayDb));
-        Calendar last = StatUtils.date2Calendar(lastDay);
+        Calendar last = StatUtils.date2Calendar(today);
         // Compute the stat for each day starting at first day
         Calendar currentDay = StatUtils.date2Calendar(firstDay.getTime());
 
@@ -98,7 +98,7 @@ public class StatisticsUpdater {
         }
 
         // if the current day in db has already been processed, return
-        if (!(firstDay.getTimeInMillis() < lastDay.getTime()))
+        if (!(firstDay.getTimeInMillis() < today.getTime()))
             return;
 
         // Update each period
@@ -106,6 +106,11 @@ public class StatisticsUpdater {
 
     }
 
+    /**
+     * Update the stat for all periods of a given sensor from a specific date.
+     * @param id id of the sensor to update
+     * @param firstDay specific Date at which we start updating stats
+     */
     private void updatePeriod(String id, Date firstDay) {
         List<DayStat> dayStats = mDayStatRepository.findBySensorId(id);
         Collections.sort(dayStats, new DayStatComparator());
@@ -120,40 +125,14 @@ public class StatisticsUpdater {
             updateOrCreatePeriodStat(id, newDay, Period.YEAR);
             updateOrCreatePeriodStat(id, newDay, Period.ALLTIME);
         }
-
-
-
-//        while (currentDay < StatUtils.date2TimeStamp(lastDay)) {
-//            boolean update = true;
-//
-//            // Find the day to add to each period
-//            List<DayStat> days = mDayStatRepository.findBySensorIdAndDay(id, StatUtils.getDateAtMidnight(StatUtils.timestamp2Date(currentDay)));
-//
-//            if (days == null || days.size() == 0)
-//                update = false;
-//
-//            DayStat newDay = null;
-//
-//            if (update)
-//                newDay = days.get(0);
-//
-//            if (newDay == null)
-//                update = false;
-//
-//            if (update) {
-//                // Recompute the stats for each period
-//                updateOrCreatePeriodStat(id, newDay, Period.DAY);
-//                updateOrCreatePeriodStat(id, newDay, Period.WEEK);
-//                updateOrCreatePeriodStat(id, newDay, Period.MONTH);
-//                updateOrCreatePeriodStat(id, newDay, Period.YEAR);
-//                updateOrCreatePeriodStat(id, newDay, Period.ALLTIME);
-//            }
-//
-//            currentDay += 60 * 60 * 24; // 60 seconds * 60 minutes * 24h = number of seconds in a day
-//        }
-
     }
 
+    /**
+     * Update or create stats for a sensor at a given period by adding a DayStat.
+     * @param id id of the sensor to update
+     * @param dayStat DayStat to add to this period
+     * @param period given Period
+     */
     private void updateOrCreatePeriodStat(String id, DayStat dayStat, Period period) {
         List<PeriodStat> periodStats = mPeriodStatRepository.findBySensorIdAndPeriod(id, period);
         PeriodStat periodStat = null;

@@ -50,7 +50,7 @@ public class Watcher implements CommandLineRunner {
     public void run(String... args) throws Exception {
         NotificationSender sender = new NotificationSender("AIzaSyAXxQHFNI783jfWY1RRu2gotxUKvanys0U");
         NotificationMessage message = new NotificationMessage.Builder()
-                .timeToLive(24*60*60*7)
+                .timeToLive(24*60*60*7) // A week in seconds
                 .delayWhileIdle(true)
                 .addData("message", "this is my message")
                 .build();
