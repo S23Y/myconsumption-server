@@ -60,7 +60,30 @@ public class StatisticsUpdater {
             System.out.println("Computing done.");
         }
 
+        checkForNotifications();
+
         return success;
+    }
+
+    private void checkForNotifications() {
+        Calendar lastDay = StatUtils.getCalendarAtMidnight(new Date());
+        lastDay.add(Calendar.DATE, -1);
+
+        List<PeriodStat> periodStats = mPeriodStatRepository.findByPeriod(Period.DAY);
+
+        if (periodStats == null || periodStats.size() == 0)
+            return;
+
+        for (PeriodStat periodStat : periodStats) {
+            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() != lastDay.getTimeInMillis())
+                continue;
+            
+            sendNotification(periodStat);
+        }
+    }
+
+    private void sendNotification(PeriodStat periodStat) {
+
     }
 
     /**
@@ -144,7 +167,6 @@ public class StatisticsUpdater {
 
         // Update period stat
         periodStat.removeFirstDay();
-
         periodStat.addDayInList(dayStat);
         periodStat.recompute();
 
