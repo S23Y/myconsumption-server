@@ -135,7 +135,7 @@ public class StatisticsUpdater {
      */
     private void updateOrCreatePeriodStat(String id, DayStat dayStat, Period period) {
         List<PeriodStat> periodStats = mPeriodStatRepository.findBySensorIdAndPeriod(id, period);
-        PeriodStat periodStat = null;
+        PeriodStat periodStat;
 
         if (periodStats == null || periodStats.size() == 0)
             periodStat = new PeriodStat(id, period);
