@@ -120,6 +120,7 @@ public class StatisticsUpdater {
                     .delayWhileIdle(true)
                     .collapseKey(sensorId)
                     .addData("message", msgNotif)
+                    .addData("sensor", sensorId)
                     .build();
             try {
                 sender.sendNoRetry(message, user.getRegisterId());
