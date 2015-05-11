@@ -1,6 +1,7 @@
 package org.starfishrespect.myconsumption.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,6 +36,9 @@ public class Watcher implements CommandLineRunner {
     @Autowired
     private UserRepository mUserRepository;
 
+    @Value("${api.key}")
+    private String mApiKey;
+
     private SensorsDataRetriever retriever;
     private StatisticsUpdater statUpdater;
 
@@ -48,7 +52,7 @@ public class Watcher implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         retriever = new SensorsDataRetriever(mSensorRepository, mValuesRepository);
-        statUpdater = new StatisticsUpdater(mSensorRepository, mPeriodStatRepository, mDayStatRepository, mUserRepository);
+        statUpdater = new StatisticsUpdater(mApiKey, mSensorRepository, mPeriodStatRepository, mDayStatRepository, mUserRepository);
 
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
 

@@ -37,12 +37,12 @@ public class StatisticsUpdater {
     @Autowired
     private UserRepository mUserRepository;
 
-    @Value("${api.key}")
     private String mApiKey;
 
     private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
-    public StatisticsUpdater(SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo, UserRepository uRepo) {
+    public StatisticsUpdater(String key, SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo, UserRepository uRepo) {
+        this.mApiKey = key;
         this.mSensorRepository = seRepo;
         this.mPeriodStatRepository = stRepo;
         this.mDayStatRepository = dStRepo;
@@ -126,7 +126,6 @@ public class StatisticsUpdater {
             } catch (IOException e) {
                 mLogger.error("Notification not sent: " + e.toString());
             }
-
         }
     }
 
