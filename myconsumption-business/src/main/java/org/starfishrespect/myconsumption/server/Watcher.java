@@ -7,10 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.starfishrespect.myconsumption.server.business.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.notifications.NotificationMessage;
 import org.starfishrespect.myconsumption.server.notifications.NotificationSender;
-import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
-import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
-import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
-import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
+import org.starfishrespect.myconsumption.server.repositories.*;
 import org.starfishrespect.myconsumption.server.stats.StatisticsUpdater;
 
 import java.util.Date;
@@ -28,13 +25,15 @@ public class Watcher implements CommandLineRunner {
     private long nextRetrieve = 0;
 
     @Autowired
-    private SensorRepository sensorRepository;
+    private SensorRepository mSensorRepository;
     @Autowired
-    private ValuesRepository valuesRepository;
+    private ValuesRepository mValuesRepository;
     @Autowired
     private PeriodStatRepository mPeriodStatRepository;
     @Autowired
-    private DayStatRepository dayStatRepository;
+    private DayStatRepository mDayStatRepository;
+    @Autowired
+    private UserRepository mUserRepository;
 
     private SensorsDataRetriever retriever;
     private StatisticsUpdater statUpdater;
@@ -56,8 +55,8 @@ public class Watcher implements CommandLineRunner {
                 .build();
         sender.sendNoRetry(message, "APA91bFUIhjTdJUKAQgVJLpPggtjKkmzSp7XUqWZudg4AW_bFky5yZ2OMf_OH3hrHlPEfega4gQY9V4CkfxkrhLRFAad4fY-LkyOFyCUwOUsbD4Yiy-eZrSCjiBganaDi0L-iAPcdiBsure7yRr2wUhvsQcLrPCKIW_AamD0rXZAUEdFQaZXfV8");
 
-        retriever = new SensorsDataRetriever(sensorRepository, valuesRepository);
-        statUpdater = new StatisticsUpdater(sensorRepository, mPeriodStatRepository, dayStatRepository);
+        retriever = new SensorsDataRetriever(mSensorRepository, mValuesRepository);
+        statUpdater = new StatisticsUpdater(mSensorRepository, mPeriodStatRepository, mDayStatRepository, mUserRepository);
 
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
 

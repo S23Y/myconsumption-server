@@ -7,10 +7,12 @@ import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.entities.DayStat;
 import org.starfishrespect.myconsumption.server.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
+import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.PeriodStatRepository;
+import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -28,13 +30,16 @@ public class StatisticsUpdater {
     private PeriodStatRepository mPeriodStatRepository;
     @Autowired
     private DayStatRepository mDayStatRepository;
+    @Autowired
+    private UserRepository mUserRepository;
 
     private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
-    public StatisticsUpdater(SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo) {
+    public StatisticsUpdater(SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo, UserRepository uRepo) {
         this.mSensorRepository = seRepo;
         this.mPeriodStatRepository = stRepo;
         this.mDayStatRepository = dStRepo;
+        this.mUserRepository = uRepo;
     }
 
     /**
@@ -75,15 +80,19 @@ public class StatisticsUpdater {
             return;
 
         for (PeriodStat periodStat : periodStats) {
-            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() != lastDay.getTimeInMillis())
-                continue;
-            
+            // TODO TEST AND UNCOMMENT
+//            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() != lastDay.getTimeInMillis())
+//                continue;
+
             sendNotification(periodStat);
         }
     }
 
     private void sendNotification(PeriodStat periodStat) {
+        String sensorId = periodStat.getSensorId();
 
+        // Get the user associated to this sensor id
+        List<User> users = mUserRepository.findBySensorId(sensorId);
     }
 
     /**

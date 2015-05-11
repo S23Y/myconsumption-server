@@ -59,6 +59,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     }
 
     @Override
+    public List<User> findBySensorId(String sensorId) {
+        List<User> users = getAllUsers();
+
+        for (User user : users) {
+            boolean remove = true;
+
+            for (String id : user.getSensors())  {
+                if(id.equals(sensorId))
+                    remove = false;
+            }
+
+            if (remove)
+                users.remove(user);
+        }
+
+        return users;
+    }
+
+    @Override
     public User getUser(String name) {
         Query existingQuery = new Query(new Criteria("name").is(name));
         if (mongoOperation.exists(existingQuery, User.class, COLLECTION_NAME)) {

@@ -33,6 +33,13 @@ public interface UserRepositoryCustom {
     public List<User> getAllUsers();
 
     /**
+     * Returns the list of the users associated to a given sensor id.
+     * @param sensorId a sensor id as a String
+     * @return returns the list of the users associated to a given sensor id
+     */
+    public List<User> findBySensorId(String sensorId);
+
+    /**
      * Insert an user in the database
      *
      * @param user the user
