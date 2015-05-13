@@ -87,9 +87,9 @@ public class StatisticsUpdater {
             return;
 
         for (PeriodStat periodStat : periodStats) {
-            // TODO TEST AND UNCOMMENT
-//            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() != lastDay.getTimeInMillis())
-//                continue;
+            // TODO TEST line below
+            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() != lastDay.getTimeInMillis())
+                continue;
 
             sendNotification(periodStat);
         }
