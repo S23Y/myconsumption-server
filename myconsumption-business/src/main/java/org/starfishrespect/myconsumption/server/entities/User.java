@@ -43,6 +43,10 @@ public class User {
         this.name = name;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public String getRegisterId() {
         return registerId;
     }

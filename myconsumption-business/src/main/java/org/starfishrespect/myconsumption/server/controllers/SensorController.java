@@ -3,6 +3,7 @@ package org.starfishrespect.myconsumption.server.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SensorDTO;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
@@ -10,28 +11,24 @@ import org.starfishrespect.myconsumption.server.api.dto.FluksoSensorSettingsDTO;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
-import org.starfishrespect.myconsumption.server.entities.MinuteValues;
-import org.starfishrespect.myconsumption.server.entities.SensorDataset;
 import org.starfishrespect.myconsumption.server.entities.Sensor;
 import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
-import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 /**
  * Created by thibaud on 11.03.15.
  */
 @RestController
 @RequestMapping("/sensors")
+@PreAuthorize("hasRole('ROLE_USER')")
 public class SensorController {
 
     @Autowired
