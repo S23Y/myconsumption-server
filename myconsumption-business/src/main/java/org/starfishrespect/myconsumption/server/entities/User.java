@@ -1,17 +1,27 @@
 package org.starfishrespect.myconsumption.server.entities;
 
+import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class User {
+    private final Logger mLogger = LoggerFactory.getLogger(User.class);
+
 
     @Id
     private String id;
 
     private String name;
-    private String password;
+    private byte[] password;
+    private byte[] salt;
     private List<String> sensors;
     private String registerId;
 
@@ -19,8 +29,50 @@ public class User {
 
     public User(String name, String password) {
         this.name = name;
-        this.password = password;
+        this.salt = getRandomSalt();
+        this.password = hashAndSalt(password);
         sensors = new ArrayList<String>();
+    }
+
+    private byte[] getRandomSalt() {
+        // Generate a random salt
+        final Random r = new SecureRandom();
+        byte[] salt = new byte[32];
+        r.nextBytes(salt);
+
+        return salt;
+    }
+
+    /**
+     * Return a Base64 encoded String of hash(hashedPassword + salt)
+     * @param password the password to hash
+     * @return Return a Base64 encoded String of hash(hashedPassword + salt)
+     */
+    private byte[] hashAndSalt(String password) {
+        byte[] hashPwd = Base64.decodeBase64(password);
+
+        // Concatenate the salt and the hash
+        byte[] hashPwdSalt = new byte[hashPwd.length + salt.length];
+        System.arraycopy(hashPwd, 0, hashPwdSalt, 0, hashPwd.length);
+        System.arraycopy(salt, 0, hashPwdSalt, hashPwd.length, salt.length);
+
+        // Hash everything and return
+        return sha256(hashPwdSalt);
+    }
+
+
+    private byte[] sha256(byte[] input) {
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            mLogger.error(e.toString());
+        }
+        byte[] hash = new byte[0];
+        if (digest != null) {
+            hash = digest.digest(input);
+        }
+        return hash;
     }
 
 
@@ -45,6 +97,10 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public byte[] getSalt() {
+        return salt;
     }
 
     public String getRegisterId() {
