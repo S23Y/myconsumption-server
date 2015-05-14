@@ -1,22 +1,9 @@
 package org.starfishrespect.myconsumption.server;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 /**
  * Created by thibaud on 13.05.15.
@@ -24,13 +11,6 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Autowired
-    private RESTAuthenticationEntryPoint authenticationEntryPoint;
-    @Autowired
-    private RESTAuthenticationFailureHandler authenticationFailureHandler;
-    @Autowired
-    private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
 
 //    /**
 //     * This section defines the user accounts which can be used for
@@ -58,8 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/**")
                 .authenticated()
-                .and().httpBasic()
-                .and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .and().httpBasic();
+                //.and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //
 //        http.authorizeRequests().antMatchers("/sensors").authenticated();
 //        http.csrf().disable().
