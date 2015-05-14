@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurers
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,12 +55,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/**")
+                .authenticated()
+                .and().httpBasic()
+                .and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//
+//        http.authorizeRequests().antMatchers("/sensors").authenticated();
+//        http.csrf().disable().
+//                sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+//        http.formLogin().successHandler(authenticationSuccessHandler);
+//        http.formLogin().failureHandler(authenticationFailureHandler);
 
-        http.authorizeRequests().antMatchers("/sensors").authenticated();
-        http.csrf().disable();
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        http.formLogin().successHandler(authenticationSuccessHandler);
-        http.formLogin().failureHandler(authenticationFailureHandler);
+
 //                .httpBasic().and()
 //                .authorizeRequests()
 //                .antMatchers("/admin/**").hasRole("ADMIN")

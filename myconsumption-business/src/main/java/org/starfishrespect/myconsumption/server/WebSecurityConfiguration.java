@@ -40,6 +40,7 @@ public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdap
                 if(account != null) {
                     List<GrantedAuthority> auth = AuthorityUtils
                             .commaSeparatedStringToAuthorityList("ROLE_USER");
+                    //return new User(account.getName(), account.getPassword(), false, false, false, false, auth);
                     return new User(account.getName(), account.getPassword(), auth);
                 } else {
                     throw new UsernameNotFoundException("could not find the user '"
