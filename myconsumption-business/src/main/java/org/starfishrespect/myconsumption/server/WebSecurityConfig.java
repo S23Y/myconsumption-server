@@ -3,6 +3,7 @@ package org.starfishrespect.myconsumption.server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
@@ -23,6 +24,12 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private RESTAuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private RESTAuthenticationFailureHandler authenticationFailureHandler;
+    @Autowired
+    private RESTAuthenticationSuccessHandler authenticationSuccessHandler;
 
 //    /**
 //     * This section defines the user accounts which can be used for
@@ -48,13 +55,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
-                .httpBasic().and()
+        http.authorizeRequests().antMatchers("/sensors").authenticated();
+        http.csrf().disable();
+        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+        http.formLogin().successHandler(authenticationSuccessHandler);
+        http.formLogin().failureHandler(authenticationFailureHandler);
+//                .httpBasic().and()
 //                .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, "/employees").hasRole("ADMIN")
+//                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .anyRequest().fullyAuthenticated()
+//                .and()
+//                .formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers(HttpMethod.GET, "/sensors").hasRole("USER");
 //                .antMatchers(HttpMethod.PUT, "/employees/**").hasRole("ADMIN")
-//                .antMatchers(HttpMethod.PATCH, "/employees/**").hasRole("ADMIN").and()
-                .csrf().disable();
+//                .antMatchers(HttpMethod.PATCH, "/employees/**").hasRole("ADMIN")
+//                .and()
+//                .csrf().disable();
     }
 }
 

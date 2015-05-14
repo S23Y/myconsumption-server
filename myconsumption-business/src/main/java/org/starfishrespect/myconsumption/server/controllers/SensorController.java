@@ -28,7 +28,6 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sensors")
-@PreAuthorize("hasRole('ROLE_USER')")
 public class SensorController {
 
     @Autowired
