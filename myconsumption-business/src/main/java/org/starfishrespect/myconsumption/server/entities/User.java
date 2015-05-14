@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Random;
 
 public class User {
-    private final Logger mLogger = LoggerFactory.getLogger(User.class);
+    private static final Logger mLogger = LoggerFactory.getLogger(User.class);
 
 
     @Id
     private String id;
 
     private String name;
-    private byte[] password;
+    private String password;
     private byte[] salt;
     private List<String> sensors;
     private String registerId;
@@ -30,8 +30,8 @@ public class User {
     public User(String name, String password) {
         this.name = name;
         this.salt = getRandomSalt();
-        this.password = hashAndSalt(password);
-        sensors = new ArrayList<String>();
+        this.password = hashAndSalt(password, salt);
+        sensors = new ArrayList<>();
     }
 
     private byte[] getRandomSalt() {
@@ -48,7 +48,7 @@ public class User {
      * @param password the password to hash
      * @return Return a Base64 encoded String of hash(hashedPassword + salt)
      */
-    private byte[] hashAndSalt(String password) {
+    public static String hashAndSalt(String password, byte[] salt) {
         byte[] hashPwd = Base64.decodeBase64(password);
 
         // Concatenate the salt and the hash
@@ -57,11 +57,11 @@ public class User {
         System.arraycopy(salt, 0, hashPwdSalt, hashPwd.length, salt.length);
 
         // Hash everything and return
-        return sha256(hashPwdSalt);
+        return Base64.encodeBase64String(sha256(hashPwdSalt));
     }
 
 
-    private byte[] sha256(byte[] input) {
+    private static byte[] sha256(byte[] input) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
