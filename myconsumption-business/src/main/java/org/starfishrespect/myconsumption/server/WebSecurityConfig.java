@@ -1,10 +1,21 @@
 package org.starfishrespect.myconsumption.server;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.starfishrespect.myconsumption.server.repositories.UserRepository;
+
 /**
  * Created by thibaud on 13.05.15.
  */
@@ -12,17 +23,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /**
-     * This section defines the user accounts which can be used for
-     * authentication as well as the roles each user has.
-     */
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-        auth.inMemoryAuthentication()
-                .withUser("greg").password("turnquist").roles("USER").and()
-                .withUser("ollie").password("gierke").roles("USER", "ADMIN");
-    }
+//    /**
+//     * This section defines the user accounts which can be used for
+//     * authentication as well as the roles each user has.
+//     */
+//    @Override
+//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+//
+//        auth.inMemoryAuthentication()
+//                .withUser("greg").password("turnquist").roles("USER").and()
+//                .withUser("ollie").password("gierke").roles("USER", "ADMIN");
+//    }
 
     /**
      * This section defines the security policy for the app.
@@ -45,3 +57,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable();
     }
 }
+
+
