@@ -113,6 +113,9 @@ public class StatisticsUpdater {
             msgNotif = "Your daily consumption is decreasing for the sensor " + sensorName;
 
         for(User user : users) {
+            if (user.getRegisterId() == null || user.getRegisterId().isEmpty())
+                continue;
+            
             NotificationSender sender = new NotificationSender(mApiKey);
             NotificationMessage message = new NotificationMessage.Builder()
                     .timeToLive(24*60*60*7) // A week in seconds
