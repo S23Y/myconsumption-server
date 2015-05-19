@@ -20,6 +20,7 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,6 @@ public class SensorController {
 
     @RequestMapping(method = RequestMethod.GET)
     public List<SensorDTO> getAllSensors() {
-
         List<SensorDTO> result = new ArrayList<>();
         for (Sensor s : mSensorRepository.getAllSensors()) {
             result.add(new DozerBeanMapper().map(s, SensorDTO.class));
@@ -60,14 +60,29 @@ public class SensorController {
      * Returns the values from a given sensor
      */
     @RequestMapping(value = "/{sensorId}/data", method = RequestMethod.GET)
-    public List<List<Integer>> valuesForSensor(@PathVariable String sensorId,
+    public List<List<Integer>> valuesForSensor(Principal principal, @PathVariable String sensorId,
                                @RequestParam(value = "start", required = false, defaultValue = "0") int startTime,
                                @RequestParam(value = "end", required = false, defaultValue = "0") int endTime) throws DaoException {
+
+        // Check if this user can access this resource
+        List<User> users = mUserRepository.findBySensorId(sensorId);
+        boolean allowed = false;
+
+        for(User user : users) {
+            if (principal.getName().equals(user.getName()))
+                allowed = true;
+        }
+
+        if (!allowed)
+            return null;
+
+        // Return the values
         return mSensorRepository.getValues(sensorId, startTime, endTime);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public SimpleResponseDTO addSensor(@RequestParam(value = "type", defaultValue = "") String sensorType,
+    public SimpleResponseDTO addSensor(Principal principal,
+                              @RequestParam(value = "type", defaultValue = "") String sensorType,
                               @RequestParam(value = "settings", defaultValue = "") String settings,
                               @RequestParam(value = "name", defaultValue = "") String name,
                               @RequestParam(value = "user", defaultValue = "") String linkToUser) throws DaoException {
@@ -75,6 +90,10 @@ public class SensorController {
         if (sensorType.equals("") || settings.equals("") || name.equals("")) {
             throw new BadRequestException();
         }
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to modify this user");
 
         Sensor sensor = null;
         switch (sensorType) {
@@ -110,10 +129,15 @@ public class SensorController {
     }
 
     @RequestMapping(value = "/{sensorId}", method = RequestMethod.POST)
-    public SimpleResponseDTO editSensor(@PathVariable String sensorId,
+    public SimpleResponseDTO editSensor(Principal principal,
+                                       @PathVariable String sensorId,
                                        @RequestParam(value = "name") String name,
                                        @RequestParam(value = "settings", defaultValue = "") String settings)
             throws DaoException {
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to modify this user");
 
         if (mSensorRepository.sensorExists(sensorId)) {
             Sensor sensor = mSensorRepository.getSensor(sensorId);
@@ -161,7 +185,19 @@ public class SensorController {
     }
 
     @RequestMapping(value = "/{sensorId}", method = RequestMethod.DELETE)
-    public SimpleResponseDTO removeSensor(@PathVariable String sensorId) {
+    public SimpleResponseDTO removeSensor(Principal principal, @PathVariable String sensorId) {
+        // Check if this user can access this resource
+        List<User> users = mUserRepository.findBySensorId(sensorId);
+        boolean allowed = false;
+
+        for(User user : users) {
+            if (principal.getName().equals(user.getName()))
+                allowed = true;
+        }
+
+        if (!allowed)
+            return null;
+
         if (mSensorRepository.sensorExists(sensorId)) {
             if (!mSensorRepository.deleteSensor(sensorId)) {
                 return new SimpleResponseDTO(false, "error while deleting sensor");
