@@ -11,6 +11,7 @@ import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.NotFoundException;
+import java.security.Principal;
 
 /**
  * Created by thibaud on 08.05.15.
@@ -23,8 +24,13 @@ public class NotifController {
     private UserRepository mUserRepository;
 
     @RequestMapping(value = "/{name}/id/{registerId}", method = RequestMethod.POST)
-    public SimpleResponseDTO registerId(@PathVariable String name, @PathVariable String registerId)
+    public SimpleResponseDTO registerId(Principal principal,
+                                        @PathVariable String name, @PathVariable String registerId)
             throws DaoException {
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to modify this user");
 
         User user = mUserRepository.getUser(name);
 
@@ -38,6 +44,6 @@ public class NotifController {
         user.setRegisterId(registerId);
         mUserRepository.updateUser(user);
 
-        return new SimpleResponseDTO(true, "register id associated to the user");
+        return new SimpleResponseDTO(true, "Register id associated to the user");
     }
 }

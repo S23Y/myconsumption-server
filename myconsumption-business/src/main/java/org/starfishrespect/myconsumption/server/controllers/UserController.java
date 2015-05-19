@@ -2,8 +2,6 @@ package org.starfishrespect.myconsumption.server.controllers;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
 import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
@@ -15,7 +13,6 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import java.security.Principal;
-import java.util.List;
 
 /**
  * Created by thibaud on 11.03.15.
