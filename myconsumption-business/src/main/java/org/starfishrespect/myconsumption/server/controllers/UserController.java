@@ -29,14 +29,13 @@ public class UserController {
 
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public UserDTO get(@PathVariable String name,
-                       @RequestParam(value = "password", defaultValue = "") String password) {
-        List<User> users = mUserRepository.findByNameAndPassword(name, password);
+    public UserDTO get(@PathVariable String name) {
+        User user = mUserRepository.getUser(name);
 
-        if (users == null || users.size() == 0)
+        if (user == null)
             throw new NotFoundException();
         else
-            return new DozerBeanMapper().map(users.get(0), UserDTO.class);
+            return new DozerBeanMapper().map(user, UserDTO.class);
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)
