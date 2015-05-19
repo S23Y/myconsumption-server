@@ -12,6 +12,7 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.util.List;
 
 /**
  * Created by thibaud on 11.03.15.
@@ -28,13 +29,14 @@ public class UserController {
 
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public UserDTO get(@PathVariable String name) {
-        User user = mUserRepository.getUser(name);
+    public UserDTO get(@PathVariable String name,
+                       @RequestParam(value = "password", defaultValue = "") String password) {
+        List<User> users = mUserRepository.findByNameAndPassword(name, password);
 
-        if (user == null)
+        if (users == null || users.size() == 0)
             throw new NotFoundException();
         else
-            return new DozerBeanMapper().map(user, UserDTO.class);
+            return new DozerBeanMapper().map(users.get(0), UserDTO.class);
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.POST)

@@ -9,4 +9,5 @@ import java.util.List;
  * Created by thibaud on 16.03.15.
  */
 public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom {;
+    public List<User> findByNameAndPassword(String name, String password);
 }

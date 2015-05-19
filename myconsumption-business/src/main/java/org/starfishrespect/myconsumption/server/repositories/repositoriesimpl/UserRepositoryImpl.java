@@ -10,6 +10,7 @@ import org.starfishrespect.myconsumption.server.entities.User;
 import org.starfishrespect.myconsumption.server.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.repositories.UserRepositoryCustom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,6 +62,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     @Override
     public List<User> findBySensorId(String sensorId) {
         List<User> users = getAllUsers();
+        List<User> results = new ArrayList<>();
 
         for (User user : users) {
             boolean remove = true;
@@ -70,11 +72,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                     remove = false;
             }
 
-            if (remove)
-                users.remove(user);
+            if (!remove)
+                results.add(user);
         }
 
-        return users;
+        return results;
     }
 
     @Override
