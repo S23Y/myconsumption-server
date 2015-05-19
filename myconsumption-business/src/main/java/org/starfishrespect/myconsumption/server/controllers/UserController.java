@@ -63,8 +63,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.POST)
-    public SimpleResponseDTO addSensor(@PathVariable String name, @PathVariable String sensorId)
+    public SimpleResponseDTO addSensor(Principal principal,
+                                       @PathVariable String name, @PathVariable String sensorId)
             throws DaoException {
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to modify this user");
 
         User user = mUserRepository.getUser(name);
 
@@ -85,14 +90,25 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{name}", method = RequestMethod.DELETE)
-    public SimpleResponseDTO deleteUser(@PathVariable String name) {
+    public SimpleResponseDTO deleteUser(Principal principal, @PathVariable String name) {
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to delete this user");
+
         mUserRepository.deleteUser(name);
 
         return new SimpleResponseDTO(true, "user deleted");
     }
 
     @RequestMapping(value = "/{name}/sensor/{sensorId}", method = RequestMethod.DELETE)
-    public SimpleResponseDTO removeSensor(@PathVariable String name, @PathVariable String sensorId) throws DaoException {
+    public SimpleResponseDTO removeSensor(Principal principal,
+                                          @PathVariable String name, @PathVariable String sensorId) throws DaoException {
+
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            return new SimpleResponseDTO(false, "you are not allowed to modify this user");
+
         User user = mUserRepository.getUser(name);
 
         if (user == null)
@@ -106,46 +122,5 @@ public class UserController {
 
         return new SimpleResponseDTO(true, "sensor unassociated from the user");
     }
-
-
-    // TODO
-/*    @Override
-    public SimpleResponse pushToken(String username, String deviceType, String token) {
-        if (deviceType == null || deviceType.equals("") || token == null || token.equals("")) {
-            throw new BadRequestException();
-        }
-        try {
-            usersController.addToken(username, deviceType, token);
-            return new SimpleResponse(true, "Token added");
-        } catch (DaoException e) {
-            switch (e.getExceptionType()) {
-                case TOKEN_EXISTS:
-                    return new SimpleResponse(SimpleResponse.STATUS_ALREADY_EXISTS, "Token already exists");
-                default:
-                    return new SimpleResponse(false, "Impossible to update user");
-            }
-        }
-    }
-
-// TODO
-    @Override
-    public SimpleResponse deleteToken(String username, String token) {
-        if (token.equals("")) {
-            throw new BadRequestException();
-        }
-        try {
-            usersController.deleteToken(username, token);
-            return new SimpleResponse(true, "Token removed");
-        } catch (DaoException e) {
-            e.printStackTrace();
-            switch (e.getExceptionType()) {
-                case USER_NOT_FOUND:
-                case TOKEN_NOT_FOUND:
-                    throw new NotFoundException();
-                default:
-                    return new SimpleResponse(false, "Error when removing the token");
-            }
-        }
-    }*/
 
 }

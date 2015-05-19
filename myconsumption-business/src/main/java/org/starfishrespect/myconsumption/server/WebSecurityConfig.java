@@ -33,10 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/users/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/**").permitAll() // needed to create a user on the first launch of the app
                 .antMatchers(HttpMethod.POST, "/users/**/sensor/**").authenticated()
-                .antMatchers("/configs/**").permitAll()
+                .antMatchers("/configs/**").permitAll() // this resource does not need to be protected
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
