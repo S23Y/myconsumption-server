@@ -2,6 +2,8 @@ package org.starfishrespect.myconsumption.server.controllers;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.starfishrespect.myconsumption.server.api.dto.SimpleResponseDTO;
 import org.starfishrespect.myconsumption.server.api.dto.UserDTO;
@@ -12,6 +14,7 @@ import org.starfishrespect.myconsumption.server.repositories.UserRepository;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -20,7 +23,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
     @Autowired
     private UserRepository mUserRepository;
 
@@ -29,7 +31,11 @@ public class UserController {
 
 
     @RequestMapping(value = "/{name}", method = RequestMethod.GET)
-    public UserDTO get(@PathVariable String name) {
+    public UserDTO get(Principal principal, @PathVariable String name) {
+        // Check if this user can access this resource
+        if (!(principal.getName().equals(name)))
+            throw new NotFoundException();
+
         User user = mUserRepository.getUser(name);
 
         if (user == null)

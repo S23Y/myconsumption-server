@@ -27,13 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
     /**
-     * This section defines the security policy for the app.
-     * - BASIC authentication is supported (enough for this REST-based demo)
-     * - /employees is secured using URL security shown below
-     * - CSRF headers are disabled since we are only testing the REST interface,
-     *   not a web one.
-     *
-     * NOTE: GET is not shown which defaults to permitted.
+     * Define the security policy for the REST services.
+     * BASIC authentication is supported.
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
