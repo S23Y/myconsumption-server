@@ -92,7 +92,7 @@ public class SensorController {
         }
 
         // Check if this user can access this resource
-        if (!(principal.getName().equals(name)))
+        if (!(principal.getName().equals(linkToUser)))
             return new SimpleResponseDTO(false, "you are not allowed to modify this user");
 
         Sensor sensor = null;
