@@ -80,25 +80,37 @@ public class StatisticsUpdater {
         Calendar lastDay = StatUtils.getCalendarAtMidnight(new Date());
         lastDay.add(Calendar.DATE, -1);
 
-        List<PeriodStat> periodStats = mPeriodStatRepository.findByPeriod(Period.DAY);
+        List<Sensor> sensors = mSensorRepository.getAllSensors();
 
-        if (periodStats == null || periodStats.size() == 0)
-            return;
+        for (Sensor sensor : sensors) {
+            List<PeriodStat> dayStats = mPeriodStatRepository.findBySensorIdAndPeriod(sensor.getId(), Period.DAY);
+            List<PeriodStat> weekStats = mPeriodStatRepository.findBySensorIdAndPeriod(sensor.getId(), Period.WEEK);
 
-        for (PeriodStat periodStat : periodStats) {
-            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() == lastDay.getTimeInMillis())
-                continue;
+            if (dayStats == null || dayStats.size() == 0 || weekStats == null || weekStats.size() == 0)
+                return;
+            else
+                sendNotification(dayStats.get(0), weekStats.get(0));
 
-            sendNotification(periodStat);
         }
+//        List<PeriodStat> periodStats = mPeriodStatRepository.findByPeriod(Period.DAY);
+//
+//        if (periodStats == null || periodStats.size() == 0)
+//            return;
+//
+//        for (PeriodStat periodStat : periodStats) {
+//            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() == lastDay.getTimeInMillis())
+//                continue;
+//
+//            sendNotification(periodStat);
+//        }
     }
 
-    private void sendNotification(PeriodStat periodStat) {
+    private void sendNotification(PeriodStat dayStat, PeriodStat weekStat) {
 
-        if (periodStat.getDiffLastTwo() == 0)
+        if (dayStat.getDiffLastTwo() == 0)
             return;
 
-        String sensorId = periodStat.getSensorId();
+        String sensorId = dayStat.getSensorId();
         String sensorName = mSensorRepository.getSensor(sensorId).getName();
 
         // Get the user associated to this sensor id
@@ -106,10 +118,14 @@ public class StatisticsUpdater {
 
         String msgNotif;
 
-        if (periodStat.getDiffLastTwo() > 0)
+        // If the day consumption will lead to a week consumption greater/smaller by 15%
+        double threshold = 1.15;
+        if ((dayStat.getConsumption() * 7) > (weekStat.getConsumption() * threshold))
             msgNotif = "Your daily consumption is increasing for the sensor " + sensorName;
-        else
+        else if ((dayStat.getConsumption() * 7 * threshold) < weekStat.getConsumption())
             msgNotif = "Your daily consumption is decreasing for the sensor " + sensorName;
+        else
+            return;
 
         for(User user : users) {
             if (user.getRegisterId() == null || user.getRegisterId().isEmpty())
