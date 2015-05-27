@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.business;
+package org.starfishrespect.myconsumption.server.business.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

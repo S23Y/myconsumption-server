@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.starfishrespect.myconsumption.server.business.repositories.*;
+import org.starfishrespect.myconsumption.server.business.sensors.SensorsDataRetriever;
 import org.starfishrespect.myconsumption.server.business.stats.StatisticsUpdater;
 
 import java.util.Date;

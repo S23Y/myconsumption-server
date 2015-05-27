@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.business;
+package org.starfishrespect.myconsumption.server.business.sensors;
 
 import sun.net.www.protocol.https.DefaultHostnameVerifier;
 

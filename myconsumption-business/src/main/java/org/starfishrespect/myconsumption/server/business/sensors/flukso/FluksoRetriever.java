@@ -9,7 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.starfishrespect.myconsumption.server.business.SSLCheckUtil;
+import org.starfishrespect.myconsumption.server.business.sensors.SSLCheckUtil;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorData;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.InvalidDataException;

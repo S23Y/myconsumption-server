@@ -1,4 +1,4 @@
-package org.starfishrespect.myconsumption.server.business;
+package org.starfishrespect.myconsumption.server.business.sensors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
