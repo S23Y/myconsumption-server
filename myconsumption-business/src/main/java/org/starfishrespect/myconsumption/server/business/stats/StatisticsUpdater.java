@@ -33,19 +33,13 @@ public class StatisticsUpdater {
     private PeriodStatRepository mPeriodStatRepository;
     @Autowired
     private DayStatRepository mDayStatRepository;
-    @Autowired
-    private UserRepository mUserRepository;
-
-    private String mApiKey;
 
     private final Logger mLogger = LoggerFactory.getLogger(StatisticsUpdater.class);
 
-    public StatisticsUpdater(String key, SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo, UserRepository uRepo) {
-        this.mApiKey = key;
+    public StatisticsUpdater(SensorRepository seRepo, PeriodStatRepository stRepo, DayStatRepository dStRepo) {
         this.mSensorRepository = seRepo;
         this.mPeriodStatRepository = stRepo;
         this.mDayStatRepository = dStRepo;
-        this.mUserRepository = uRepo;
     }
 
     /**
@@ -71,80 +65,7 @@ public class StatisticsUpdater {
             System.out.println("Computing done.");
         }
 
-        checkForNotifications();
-
         return success;
-    }
-
-    private void checkForNotifications() {
-        Calendar lastDay = StatUtils.getCalendarAtMidnight(new Date());
-        lastDay.add(Calendar.DATE, -1);
-
-        List<Sensor> sensors = mSensorRepository.getAllSensors();
-
-        for (Sensor sensor : sensors) {
-            List<PeriodStat> dayStats = mPeriodStatRepository.findBySensorIdAndPeriod(sensor.getId(), Period.DAY);
-            List<PeriodStat> weekStats = mPeriodStatRepository.findBySensorIdAndPeriod(sensor.getId(), Period.WEEK);
-
-            if (dayStats == null || dayStats.size() == 0 || weekStats == null || weekStats.size() == 0)
-                return;
-            else
-                sendNotification(dayStats.get(0), weekStats.get(0));
-
-        }
-//        List<PeriodStat> periodStats = mPeriodStatRepository.findByPeriod(Period.DAY);
-//
-//        if (periodStats == null || periodStats.size() == 0)
-//            return;
-//
-//        for (PeriodStat periodStat : periodStats) {
-//            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() == lastDay.getTimeInMillis())
-//                continue;
-//
-//            sendNotification(periodStat);
-//        }
-    }
-
-    private void sendNotification(PeriodStat dayStat, PeriodStat weekStat) {
-
-        if (dayStat.getDiffLastTwo() == 0)
-            return;
-
-        String sensorId = dayStat.getSensorId();
-        String sensorName = mSensorRepository.getSensor(sensorId).getName();
-
-        // Get the user associated to this sensor id
-        List<User> users = mUserRepository.findBySensorId(sensorId);
-
-        String msgNotif;
-
-        // If the day consumption will lead to a week consumption greater/smaller by 15%
-        double threshold = 1.15;
-        if ((dayStat.getConsumption() * 7) > (weekStat.getConsumption() * threshold))
-            msgNotif = "Your daily consumption is increasing for the sensor " + sensorName;
-        else if ((dayStat.getConsumption() * 7 * threshold) < weekStat.getConsumption())
-            msgNotif = "Your daily consumption is decreasing for the sensor " + sensorName;
-        else
-            return;
-
-        for(User user : users) {
-            if (user.getRegisterId() == null || user.getRegisterId().isEmpty())
-                continue;
-
-            NotificationSender sender = new NotificationSender(mApiKey);
-            NotificationMessage message = new NotificationMessage.Builder()
-                    .timeToLive(24*60*60*7) // A week in seconds
-                    .delayWhileIdle(true)
-                    .collapseKey(sensorId)
-                    .addData("message", msgNotif)
-                    .addData("sensor", sensorId)
-                    .build();
-            try {
-                sender.sendNoRetry(message, user.getRegisterId());
-            } catch (IOException e) {
-                mLogger.error("Notification not sent: " + e.toString());
-            }
-        }
     }
 
     /**
