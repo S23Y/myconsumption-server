@@ -4,10 +4,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.starfishrespect.myconsumption.server.Application;
-import org.starfishrespect.myconsumption.server.entities.User;
-import org.starfishrespect.myconsumption.server.exceptions.DaoException;
-import org.starfishrespect.myconsumption.server.repositories.UserRepository;
+import org.starfishrespect.myconsumption.server.business.Application;
+import org.starfishrespect.myconsumption.server.business.entities.User;
+import org.starfishrespect.myconsumption.server.business.exceptions.DaoException;
+import org.starfishrespect.myconsumption.server.business.repositories.UserRepository;
 
 /**
  * Created by thibaud on 26.05.15.

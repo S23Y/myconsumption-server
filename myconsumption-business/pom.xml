@@ -16,7 +16,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <start-class>org.starfishrespect.myconsumption.server.Application</start-class>
+        <start-class>org.starfishrespect.myconsumption.server.business.Application</start-class>
     </properties>
 
     <dependencies>

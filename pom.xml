@@ -23,7 +23,7 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <!--<start-class>org.starfishrespect.myconsumption.server.Application</start-class>-->
+        <!--<start-class>org.starfishrespect.myconsumption.server.business.Application</start-class>-->
     </properties>
 
 

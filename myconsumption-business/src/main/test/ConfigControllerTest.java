@@ -1,13 +1,11 @@
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.*;
 
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -16,10 +14,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.Base64Utils;
 import org.springframework.web.context.WebApplicationContext;
-import org.starfishrespect.myconsumption.server.Application;
-import org.starfishrespect.myconsumption.server.controllers.ConfigController;
+import org.starfishrespect.myconsumption.server.business.Application;
+import org.starfishrespect.myconsumption.server.business.controllers.ConfigController;
 
 /**
  * Created by thibaud on 25.05.15.

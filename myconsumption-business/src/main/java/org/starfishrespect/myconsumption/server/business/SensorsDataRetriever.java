@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.starfishrespect.myconsumption.server.business.sensors.SensorRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoRetriever;
 import org.starfishrespect.myconsumption.server.business.sensors.flukso.FluksoSensor;
-import org.starfishrespect.myconsumption.server.entities.Sensor;
-import org.starfishrespect.myconsumption.server.entities.SensorDataset;
-import org.starfishrespect.myconsumption.server.exceptions.DaoException;
+import org.starfishrespect.myconsumption.server.business.entities.Sensor;
+import org.starfishrespect.myconsumption.server.business.entities.SensorDataset;
+import org.starfishrespect.myconsumption.server.business.exceptions.DaoException;
 import org.starfishrespect.myconsumption.server.business.sensors.exceptions.RetrieveException;
-import org.starfishrespect.myconsumption.server.repositories.SensorRepository;
-import org.starfishrespect.myconsumption.server.repositories.ValuesRepository;
+import org.starfishrespect.myconsumption.server.business.repositories.SensorRepository;
+import org.starfishrespect.myconsumption.server.business.repositories.ValuesRepository;
 
 import java.util.*;
 
