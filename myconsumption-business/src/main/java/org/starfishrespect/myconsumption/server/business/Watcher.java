@@ -62,10 +62,10 @@ public class Watcher implements CommandLineRunner {
     private class WatcherTask extends TimerTask {
         @Override
         public void run() {
-            System.out.println("Watcher timer task started : " + new Date().toString());
+            System.out.println("Watcher timer task started: " + new Date().toString());
             retriever.retrieveAll();
             statUpdater.computeAll();
-            System.out.println("Watch timer task ended : " + new Date().toString());
+            System.out.println("Watcher timer task ended: " + new Date().toString());
 
             // Next iteration
             long delay = nextRetrieve - System.currentTimeMillis();
