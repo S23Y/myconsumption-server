@@ -6,6 +6,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 /**
  * Simple REST response that can be used for any REST call, when you need
  * a numeric response code, and which may contain any Object as a payload
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 @JsonAutoDetect
 public class SimpleResponseDTO {

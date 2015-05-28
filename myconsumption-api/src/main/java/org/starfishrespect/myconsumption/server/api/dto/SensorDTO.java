@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * REST representation for a sensor
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 @JsonAutoDetect
 public class SensorDTO {

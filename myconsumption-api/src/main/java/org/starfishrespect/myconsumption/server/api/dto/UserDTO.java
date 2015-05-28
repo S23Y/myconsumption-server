@@ -6,8 +6,8 @@ import java.util.List;
 
 /**
  * REST representation for a user
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
-
 @JsonAutoDetect
 public class UserDTO {
     private String name;

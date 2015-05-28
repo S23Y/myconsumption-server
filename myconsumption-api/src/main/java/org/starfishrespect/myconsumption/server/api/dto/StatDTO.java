@@ -2,6 +2,11 @@ package org.starfishrespect.myconsumption.server.api.dto;
 
 import java.io.Serializable;
 
+/**
+ * REST representation of a stat.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
+ */
 public class StatDTO implements Serializable {
     private String sensorId;
     private Period period;

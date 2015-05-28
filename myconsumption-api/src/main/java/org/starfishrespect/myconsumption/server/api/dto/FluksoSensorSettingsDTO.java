@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * Class used to represent Flukso-specific settings for REST API
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 @JsonAutoDetect
 public class FluksoSensorSettingsDTO {
