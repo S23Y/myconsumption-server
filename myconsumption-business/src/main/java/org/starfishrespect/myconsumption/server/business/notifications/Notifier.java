@@ -7,15 +7,11 @@ import org.starfishrespect.myconsumption.server.api.dto.Period;
 import org.starfishrespect.myconsumption.server.business.entities.PeriodStat;
 import org.starfishrespect.myconsumption.server.business.entities.Sensor;
 import org.starfishrespect.myconsumption.server.business.entities.User;
-import org.starfishrespect.myconsumption.server.business.repositories.DayStatRepository;
 import org.starfishrespect.myconsumption.server.business.repositories.PeriodStatRepository;
 import org.starfishrespect.myconsumption.server.business.repositories.SensorRepository;
 import org.starfishrespect.myconsumption.server.business.repositories.UserRepository;
-import org.starfishrespect.myconsumption.server.business.stats.StatUtils;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
