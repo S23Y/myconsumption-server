@@ -36,7 +36,6 @@ public class Watcher implements CommandLineRunner {
     @Autowired
     private UserRepository mUserRepository;
 
-    // TODO
     @Value("${api.key}")
     private String mApiKey;
 
@@ -55,7 +54,6 @@ public class Watcher implements CommandLineRunner {
     public void run(String... args) throws Exception {
         retriever = new SensorsDataRetriever(mSensorRepository, mValuesRepository);
         statUpdater = new StatisticsUpdater(mSensorRepository, mPeriodStatRepository, mDayStatRepository);
-        //notifier = new Notifier("AIzaSyAXxQHFNI783jfWY1RRu2gotxUKvanys0U", mSensorRepository, mPeriodStatRepository, mUserRepository);
         notifier = new Notifier(mApiKey, mSensorRepository, mPeriodStatRepository, mUserRepository);
 
         nextRetrieve = System.currentTimeMillis() + maxRetrieveInterval;
