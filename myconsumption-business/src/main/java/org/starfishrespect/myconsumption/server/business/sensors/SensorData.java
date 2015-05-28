@@ -4,6 +4,7 @@ import java.util.TreeMap;
 
 /**
  * Intermediate class used to store sensor data when retrieving it.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class SensorData {
 
@@ -54,7 +55,6 @@ public class SensorData {
     public TreeMap<Integer, Integer> getData() {
         return data;
     }
-
 
     @Override
     public String toString() {

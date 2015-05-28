@@ -23,7 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by thibaud on 02.04.15.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  * Tool that computes the statistics based on latest data. It also saves the statistics in the database.
  */
 public class StatisticsUpdater {

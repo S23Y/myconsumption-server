@@ -6,7 +6,8 @@ import org.starfishrespect.myconsumption.server.business.exceptions.DaoException
 import java.util.List;
 
 /**
- * Created by thibaud on 11.03.15.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public interface UserRepositoryCustom {
     /**

@@ -4,6 +4,7 @@ import org.starfishrespect.myconsumption.server.business.entities.Sensor;
 
 /**
  * implementation of the Sensor class for Flukso sensor
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class FluksoSensor extends Sensor {
 

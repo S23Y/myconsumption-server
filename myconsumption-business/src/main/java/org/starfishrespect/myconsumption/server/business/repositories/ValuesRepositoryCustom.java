@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Interface to access the values database
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public interface ValuesRepositoryCustom {
 

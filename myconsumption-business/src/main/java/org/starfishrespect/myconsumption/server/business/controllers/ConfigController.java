@@ -5,7 +5,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by thibaud on 02.04.15.
+ * Rest controller for the configurations.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @RestController
 @RequestMapping("/configs")

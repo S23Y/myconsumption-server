@@ -5,9 +5,9 @@ import org.starfishrespect.myconsumption.server.business.sensors.exceptions.Retr
 import java.util.Date;
 
 /**
- * abstract class used to retrieve data from a sensor
+ * Abstract class used to retrieve data from a sensor
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
-
 public interface SensorRetriever {
 
     /**

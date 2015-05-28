@@ -23,7 +23,8 @@ import static org.starfishrespect.myconsumption.server.business.notifications.No
 import static org.starfishrespect.myconsumption.server.business.notifications.NotificationConstants.TOKEN_MESSAGE_ID;
 
 /**
- * Adapted by thibaud on 09.05.15 from
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Adapted by Thibaud Ledent from
  * https://github.com/google/gcm/blob/master/gcm-server/src/com/google/android/gcm/server/Sender.java
  */
 public class NotificationSender {

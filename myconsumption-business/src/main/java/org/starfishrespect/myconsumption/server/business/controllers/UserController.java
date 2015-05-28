@@ -15,7 +15,9 @@ import javax.ws.rs.NotFoundException;
 import java.security.Principal;
 
 /**
- * Created by thibaud on 11.03.15.
+ * Rest controller for the users.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @RestController
 @RequestMapping("/users")

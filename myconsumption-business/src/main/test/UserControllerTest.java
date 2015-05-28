@@ -22,7 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.starfishrespect.myconsumption.server.business.controllers.UserController;
 
 /**
- * Created by thibaud on 25.05.15.
+ * Test class for a REST controller with authentication.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

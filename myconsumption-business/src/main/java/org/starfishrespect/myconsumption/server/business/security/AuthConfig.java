@@ -16,7 +16,10 @@ import org.starfishrespect.myconsumption.server.business.repositories.UserReposi
 import java.util.List;
 
 /**
- * Created by thibaud on 13.05.15.
+ * Match spring user with our user implementation
+ * (so that it is recognized during the authentication process)
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @Configuration
 public class AuthConfig extends GlobalAuthenticationConfigurerAdapter {

@@ -8,7 +8,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 /**
- * Created by thibaud on 13.05.15.
+ * Tells which resources of the REST service need to be protected and how.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

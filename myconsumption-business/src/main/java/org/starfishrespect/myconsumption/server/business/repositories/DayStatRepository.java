@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by thibaud on 01.05.15.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public interface DayStatRepository extends MongoRepository<DayStat, String> {
     List<DayStat> findBySensorId(String sensorId);

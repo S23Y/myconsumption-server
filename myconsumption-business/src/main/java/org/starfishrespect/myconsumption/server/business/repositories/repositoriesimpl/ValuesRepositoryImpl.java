@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Created by thibaud on 12.03.15.
+ * Repository implementation to store values
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
 
@@ -28,21 +29,11 @@ public class ValuesRepositoryImpl implements ValuesRepositoryCustom {
     private MongoOperations mongoOperation;
     private MongoOperations adminMongoOperation;
     private String shardDbName = "";
-
-//    @Autowired(required=false)
     @Autowired
     public ValuesRepositoryImpl(MongoOperations operations) {
         Assert.notNull(operations, "MongoOperations must not be null!");
         this.mongoOperation = operations;
     }
-
-//    //@Autowired(required=false)
-//    @Autowired
-//    public ValuesRepositoryImpl(MongoOperations mongoOperation, MongoOperations adminMongoOperation, String shardDbName) {
-//        this.mongoOperation = mongoOperation;
-//        this.adminMongoOperation = adminMongoOperation;
-//        this.shardDbName = shardDbName;
-//    }
 
     public void setSensor(String sensor) {
         this.sensor = sensor;

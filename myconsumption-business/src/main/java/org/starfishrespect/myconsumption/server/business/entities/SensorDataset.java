@@ -9,8 +9,9 @@ import java.util.TreeMap;
 
 
 /**
- * Contains all the values for one sensor, for an interval of
- * 1 hour
+ * Contains all the values for one sensor, for an interval of 1 hour
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class SensorDataset implements Comparable<SensorDataset> {
     @Id

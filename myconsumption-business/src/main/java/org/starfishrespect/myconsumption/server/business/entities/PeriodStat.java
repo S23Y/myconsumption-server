@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by thibaud on 03.05.15.
+ * Represent a period stat in the db.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class PeriodStat {
     @Id

@@ -23,6 +23,7 @@ import java.util.Date;
 
 /**
  * SensorRetriever inplementation for the Flukso API
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class FluksoRetriever implements SensorRetriever {
 

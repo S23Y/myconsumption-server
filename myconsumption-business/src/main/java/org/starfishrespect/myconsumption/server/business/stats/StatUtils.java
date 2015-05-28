@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * Created by thibaud on 26.04.15.
+ * Utils class for the stats
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class StatUtils {
     private static final int DAY_START_AT = 7;

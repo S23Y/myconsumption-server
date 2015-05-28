@@ -8,6 +8,7 @@ import java.util.ArrayList;
 /**
  * Simple storage class used to get informations about a sensor on the
  * Flukso API
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FluksoParams {

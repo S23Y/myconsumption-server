@@ -7,6 +7,11 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Entry point of the Spring Boot application.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
+ */
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration

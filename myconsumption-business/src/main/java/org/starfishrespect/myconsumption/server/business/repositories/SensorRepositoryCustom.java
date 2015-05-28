@@ -6,7 +6,8 @@ import org.starfishrespect.myconsumption.server.business.exceptions.DaoException
 import java.util.List;
 
 /**
- * Created by thibaud on 12.03.15 from Patrick's implementation.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent based on Patrick's implementation.
  */
 public interface SensorRepositoryCustom {
     public List<Sensor> getAllSensors();

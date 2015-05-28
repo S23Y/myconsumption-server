@@ -1,7 +1,8 @@
 package org.starfishrespect.myconsumption.server.business.exceptions;
 
 /**
- * Created by Patrick Herbeuval on 30/04/14.
+ * Types of exception.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public enum ExceptionType {
     NOT_DEFINED,

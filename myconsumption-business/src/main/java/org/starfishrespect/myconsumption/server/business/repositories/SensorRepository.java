@@ -4,7 +4,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.starfishrespect.myconsumption.server.business.entities.Sensor;
 
 /**
- * Created by thibaud on 16.03.15.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public interface SensorRepository extends MongoRepository<Sensor, String>, SensorRepositoryCustom  {
 }

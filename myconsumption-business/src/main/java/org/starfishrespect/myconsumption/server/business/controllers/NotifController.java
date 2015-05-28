@@ -14,7 +14,9 @@ import javax.ws.rs.NotFoundException;
 import java.security.Principal;
 
 /**
- * Created by thibaud on 08.05.15.
+ * REST controller for the notification.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @RestController
 @RequestMapping("/notifs")

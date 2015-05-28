@@ -15,7 +15,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Entry point for the data retriever service
+ * Launch the data retriever, the statistics updater and the notifier.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 @SpringBootApplication
 public class Watcher implements CommandLineRunner {

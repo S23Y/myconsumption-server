@@ -3,7 +3,7 @@ package org.starfishrespect.myconsumption.server.business.sensors;
 import java.util.List;
 
 /**
- * Created by Patrick Herbeuval on 16/04/14.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public interface SensorSettings {
     public List<String> getKeys();

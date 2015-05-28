@@ -10,6 +10,7 @@ import java.security.cert.X509Certificate;
 
 /**
  * Tool to disable SSL check, used because of wrong Flukso certificate
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public final class SSLCheckUtil {
     /**

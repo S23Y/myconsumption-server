@@ -1,7 +1,7 @@
 package org.starfishrespect.myconsumption.server.business.sensors.exceptions;
 
 /**
- * Created by pat on 11/03/14.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class InvalidDataException extends RetrieveException {
     public InvalidDataException(String message) {

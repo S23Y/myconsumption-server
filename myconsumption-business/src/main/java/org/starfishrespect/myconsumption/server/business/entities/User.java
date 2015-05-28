@@ -5,8 +5,12 @@ import org.springframework.data.annotation.Id;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a user in the database
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
+ */
 public class User {
-
     @Id
     private String id;
 

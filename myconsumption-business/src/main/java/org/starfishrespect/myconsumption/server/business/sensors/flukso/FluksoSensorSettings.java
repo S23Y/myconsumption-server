@@ -1,7 +1,5 @@
 package org.starfishrespect.myconsumption.server.business.sensors.flukso;
 
-
-
 import org.starfishrespect.myconsumption.server.business.sensors.SensorSettings;
 
 import java.util.ArrayList;
@@ -9,6 +7,7 @@ import java.util.List;
 
 /**
  * Storage object for Flukso-specific sensor settings
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class FluksoSensorSettings implements SensorSettings {
     private String token;

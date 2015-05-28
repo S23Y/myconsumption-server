@@ -4,6 +4,7 @@ import java.io.IOException;
 
 /**
  * Exception thrown when GCM returned an error due to an invalid request.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public final class InvalidRequestException extends IOException {
 

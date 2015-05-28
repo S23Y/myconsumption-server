@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * Used to store all values for a 1 minute interval
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class MinuteValues {
 

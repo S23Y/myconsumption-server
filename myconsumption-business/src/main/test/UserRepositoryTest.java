@@ -10,9 +10,10 @@ import org.starfishrespect.myconsumption.server.business.exceptions.DaoException
 import org.starfishrespect.myconsumption.server.business.repositories.UserRepository;
 
 /**
- * Created by thibaud on 26.05.15.
+ * test class to access the database.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 public class UserRepositoryTest {

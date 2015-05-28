@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Created by thibaud on 12.03.15.
+ * Implementation of the sensor repository
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class SensorRepositoryImpl implements SensorRepositoryCustom {
 

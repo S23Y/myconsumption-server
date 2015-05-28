@@ -15,6 +15,7 @@ import java.util.*;
 
 /**
  * Tool that perform a single retrieve operation, for one or all sensors
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class SensorsDataRetriever {
     @Autowired

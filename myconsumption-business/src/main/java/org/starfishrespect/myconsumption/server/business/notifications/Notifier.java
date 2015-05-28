@@ -19,7 +19,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by thibaud on 27.05.15.
+ * Sends notifications to GCM.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class Notifier {
     @Autowired
@@ -54,17 +56,6 @@ public class Notifier {
                 sendNotification(dayStats.get(0), weekStats.get(0));
 
         }
-//        List<PeriodStat> periodStats = mPeriodStatRepository.findByPeriod(Period.DAY);
-//
-//        if (periodStats == null || periodStats.size() == 0)
-//            return;
-//
-//        for (PeriodStat periodStat : periodStats) {
-//            if (periodStat.getDaysInPeriod().get(0).getDay().getTime() == lastDay.getTimeInMillis())
-//                continue;
-//
-//            sendNotification(periodStat);
-//        }
     }
 
     private void sendNotification(PeriodStat dayStat, PeriodStat weekStat) {

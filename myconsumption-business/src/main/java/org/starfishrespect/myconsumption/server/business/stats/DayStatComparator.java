@@ -5,7 +5,8 @@ import org.starfishrespect.myconsumption.server.business.entities.DayStat;
 import java.util.Comparator;
 
 /**
- * Created by thibaud on 05.05.15.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class DayStatComparator implements Comparator<DayStat> {
     @Override

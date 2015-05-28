@@ -6,8 +6,9 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import java.util.Date;
 
 /**
- * Created by thibaud on 01.05.15.
  * Represent statistics info about a day.
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Author: Thibaud Ledent
  */
 public class DayStat {
     @Id
@@ -21,7 +22,6 @@ public class DayStat {
     private Integer minTimestamp;
     private Integer minValue;
     private Integer average;
-    //private Integer consumption;
     private Integer consumptionDay;
     private Integer consumptionNight;
 

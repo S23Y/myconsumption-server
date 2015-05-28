@@ -7,9 +7,10 @@ import org.starfishrespect.myconsumption.server.business.sensors.SensorSettings;
 import java.util.Date;
 
 /**
- * Adapted from Patrick Herbeuval by Thibaud Ledent on 11.03.15.
  * Class that represents a sensor in database (with all the information needed
  * to retrieve data)
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
+ * Adapted from Patrick Herbeuval by Thibaud Ledent
  */
 public class Sensor {
     @Id
@@ -24,7 +25,6 @@ public class Sensor {
     protected SensorSettings sensorSettings;
 
     public Sensor() { }
-
 
     public Sensor(String name) {
         this.name = name;

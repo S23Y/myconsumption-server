@@ -1,7 +1,8 @@
 package org.starfishrespect.myconsumption.server.business.exceptions;
 
 /**
- * Created by pat on 19/03/14.
+ * DAO exception
+ * S23Y (2015). Licensed under the Apache License, Version 2.0.
  */
 public class DaoException extends Exception {
 
