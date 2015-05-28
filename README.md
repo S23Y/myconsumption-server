@@ -13,7 +13,7 @@ This repository contains the source code for the S23Y MyConsumption Server and A
 ### With Maven
 
 The easiest way to build is to install [Maven](http://maven.apache.org/download.html)
-v3.1.1+ in your development environment. 
+v3.+ in your development environment. 
 
 Then, the build is pretty simple:
 
