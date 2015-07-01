@@ -11,6 +11,13 @@ This is the back end of [MyConsumption](https://github.com/S23Y/myconsumption-an
 
 * [Apache Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
+## Documentation
+
+* A presentation of MyConsumption is available [here](https://github.com/S23Y/myconsumption-server/blob/master/doc/presentation.pdf)
+* And a complete description of the work is available [here](https://github.com/S23Y/myconsumption-server/blob/master/doc/report.pdf)
+
+For more information, please contact <myconsumption@s23y.com>
+
 ## Building
 
 ### With Maven
