@@ -13,10 +13,10 @@ This is the back end of [MyConsumption](https://github.com/S23Y/myconsumption-an
 
 ## Documentation
 
-* A presentation of MyConsumption is available [here](https://github.com/S23Y/myconsumption-server/blob/master/doc/presentation.pdf)
-* And a complete description of the work is available [here](https://github.com/S23Y/myconsumption-server/blob/master/doc/report.pdf)
+* A [presentation](https://github.com/S23Y/myconsumption-server/blob/master/doc/presentation.pdf) of MyConsumption;
+* And a [complete description(https://github.com/S23Y/myconsumption-server/blob/master/doc/report.pdf) of the work.
 
-For more information, please contact <myconsumption@s23y.com>
+For more information, please contact <myconsumption@s23y.com>.
 
 ## Building
 
